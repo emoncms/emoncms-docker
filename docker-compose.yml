@@ -1,0 +1,48 @@
+# Requires the following variables to be added to a .docker-env file
+# MYSQL_HOST=db
+# MYSQL_DATABASE=emoncms
+# MYSQL_USER=emoncms
+# MYSQL_PASSWORD=YOUR_SECURE_PASSWORD
+# MYSQL_RANDOM_ROOT_PASSWORD=yes
+
+version: '2'
+services:
+
+  web:
+  # Build php & apache container see Dockerflile
+    build: .
+    ports:
+     # Expose Emoncms on localhost port 8080
+      - 8080:80
+    volumes:
+    # Un-comment line below to mount emoncms files from local FS for dev, otherwise copy of files is copied into container at startup att Dockerfile
+    #  - .:/var/www/html
+      - emon-phpfiwa:/var/lib/phpfiwa
+      - emon-phpfina:/var/lib/phpfina
+      - emon-phptimeseries:/var/lib/phptimeseries
+    links:
+    # Link to MYSQL DB (see below)
+      - db
+    env_file:
+      - '.docker-env'
+
+  db:
+    image: mysql:5.5
+    ports:
+      - 3306:3306
+    env_file:
+      - '.env'
+    environment:
+      - "MYSQL_HOST=localhost"
+    volumes:
+      - emon-db-data:/var/lib/mysql/data
+
+volumes:
+  emon-phpfiwa:
+    driver: local
+  emon-phpfina:
+    driver: local
+  emon-db-data:
+    driver: local
+  emon-phptimeseries:
+    driver: local

@@ -1,0 +1,7 @@
+# Default docker enviroment variables, change in production enviroment
+
+MYSQL_HOST=db
+MYSQL_DATABASE=emoncms
+MYSQL_USER=emoncms
+MYSQL_PASSWORD=YOUR_SECURE_PASSWORD
+MYSQL_RANDOM_ROOT_PASSWORD=yes
