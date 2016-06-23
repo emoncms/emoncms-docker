@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 
 # Copy in emoncms files, files can be mounted from local FS for dev see docker-compose
-ADD . /var/www/html
+ADD ../emoncms /var/www/html
 
 WORKDIR /var/www/html
 RUN cp docker.settings.php settings.php

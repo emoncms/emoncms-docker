@@ -16,7 +16,7 @@ services:
       - 8080:80
     volumes:
     # Un-comment line below to mount emoncms files from local FS for dev, otherwise copy of files is copied into container at startup att Dockerfile
-    #  - .:/var/www/html
+    #  - ../emoncms:/var/www/html
       - emon-phpfiwa:/var/lib/phpfiwa
       - emon-phpfina:/var/lib/phpfina
       - emon-phptimeseries:/var/lib/phptimeseries
@@ -31,7 +31,7 @@ services:
     ports:
       - 3306:3306
     env_file:
-      - '.env'
+      - '.docker-env'
     environment:
       - "MYSQL_HOST=localhost"
     volumes:
