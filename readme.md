@@ -12,6 +12,16 @@ If running Linux Docker-compose will also need to be installed separately. Docke
 
 - [Offical Docker Compose install guide](https://docs.docker.com/compose/install/)
 
+If running on Linux highly recomended to create Docker group to avoid having to use `sudo` with Docker commands:
+
+```
+$ sudo groupadd docker
+$ sudo usermod -aG docker <YOUR-USER-NAME>
+$ docker run hello-world
+```
+
+You should now be able to `docker run hello-world` without `sudo`.
+
 ## Use Docker image
 
 *Pull emoncms image from docker hub (yet to be pushed)*
@@ -83,13 +93,38 @@ This will start two containers `emon_web` which is based on the official docker 
 
 ***
 
+# Docker Compose Setup
+
+## Development Vs Production
+
+There are three docker compose files:
+
+1. `docker-compose.yml`
+2. `docker-compose.override.yml`
+3. `docker-compose.prod.yml`
+
+The first `docker-compose.yml` sets up the base config, things that are common to both development and production.
+
+The second file `docker-compose.override.yml` sets up the development enviroment e.g. use `default.docker-env` enviroment variables and mount emoncms files from local file-system instead of copy
+
+The third file adds `docker-compose.prod.yml` adds production specific setup.
+
+This setup is based on the recomended Docker method, see [Docker Multiple Compose Files Docs](https://docs.docker.com/compose/extends/#multiple-compose-files).
+
+The development enviroment with the base + override compose is used by default e.g:
+
+    docker-compose up
+
+To run the production compose setup run:
+
+    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+
 ## Files, storage & database info
 
 ### Files
 
-**By default Emoncms files are *copied* into the `emon_web` Docker container at startup.** This is desirable for testing / production since it gives us a clean copy of the files. Any changes made to the files inside the container will be lost when the container is stopped.
-
-**For development it's desirable to mount Emoncms files from the host local file-system. Edit the commented-out line in `docker-compose.yml`. See in-line comments in this file.**
+**By default when running the development compose enviroment (see above) Emoncms files are mounted from the host file system in the `emon_web` Docker container at startup.** This is desirable for dev. For production / deployment / clean testing run production docker compose (see above). This will **copy** emoncms files into the docker container on first run. Any changes made to the files inside the container will be lost when the container is stopped.
 
 
 ### Storage

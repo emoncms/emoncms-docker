@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
               php5-mysql \
               libmcrypt-dev \
     # Enable PHP modules
-     && docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
+    && docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
 
 RUN a2enmod rewrite
 

@@ -1,0 +1,20 @@
+# production / deployment / clean testing enviroment setup
+
+version: '2'
+services:
+
+  web:
+    ports:
+      # Expose Emoncms to the world on port 80
+      - 80:80
+    env_file:
+     # Use .env with secure db credentials (needs creating), ignored by git
+     - '.docker-env'
+    environment:
+      # Set production enviroment variable flag, not currently used for anything but might be of use in the future
+      PRODUCTION: 'true'
+    
+  db:
+    env_file:
+     - '.docker-env'
+  
