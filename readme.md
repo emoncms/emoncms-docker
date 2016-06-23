@@ -1,6 +1,10 @@
-# In Development
+Using Docker it's possible to fire up Emoncms on a bare system (assuming Docker is installed) in a couple of minutes with all the LAMP installing and config taken care of. 
 
-**NOT READY FOR PRODUCTION USE**
+This is great for development since it's possible to play about with Emoncms running in a Docker container without fear of messing up your main Emoncms install.
+
+In the future, Docker can even be used as a deployment tool for Emoncms. In theory, it should be possible to deploy the Docker container on any server within minutes :-)
+
+[**To do list**](https://github.com/emoncms/emoncms-docker/issues/2)
 
 ***
 
