@@ -39,8 +39,8 @@ RUN chmod 666 /var/log/emoncms.log
 
 
 # TODO
-# consider alpine lightweight image
 # Add Pecl :
 # - dio
 # - Swiftmailer
-# php timezone https://github.com/emoncms/emoncms/blob/master/docs/LinuxInstall.md#configure-php-timezone
+# - redis
+# - mqtt
