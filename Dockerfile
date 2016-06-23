@@ -25,6 +25,14 @@ ADD docker.settings.php /var/www/html
 WORKDIR /var/www/html
 RUN cp docker.settings.php settings.php
 
+# Create folders & set permissions for feed-engine data folders (mounted as docker volumes in docker-compose)
+RUN mkdir /var/lib/phpfiwa
+RUN mkdir /var/lib/phpfina
+RUN mkdir /var/lib/phptimeseries
+RUN chown www-data:root /var/lib/phpfiwa
+RUN chown www-data:root /var/lib/phpfina
+RUN chown www-data:root /var/lib/phptimeseries
+
 # Create Emoncms logfile
 RUN touch /var/log/emoncms.log
 RUN chmod 666 /var/log/emoncms.log

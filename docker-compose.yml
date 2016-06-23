@@ -1,8 +1,8 @@
 # Base docker compose, added to by docker-compose.override or docker-compose.prd. See Readme.md
 
 version: '2'
-services:
 
+services:
   web:
     # Build php & apache container see Dockerflile
     build: .
@@ -29,7 +29,7 @@ volumes:
     driver: local
   emon-phpfina:
     driver: local
-  emon-db-data:
-    driver: local
   emon-phptimeseries:
+    driver: local
+  emon-db-data:
     driver: local
