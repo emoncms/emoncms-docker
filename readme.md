@@ -30,27 +30,26 @@ Pulling the emoncms image from docker up is the easiest way to fire up emoncms f
 
 \* **Docker image is currently in early testing and is NOT yet recommended for production**
 
-##
 
-## Build Emoncms Docker
 
-For development.
+## Build Emoncms Docker Containers
+
 
 #### Git Clone
 
-clone emoncms-docker (this repo) and emoncms core:
+clone `emoncms-docker` (this repo):
 
 	$ git clone https://github.com/emoncms/emoncms-docker
 
-Inside emoncms-docker clone emoncms-core:
+Inside `emoncms-docker` clone emoncms-core:
 
 	$ cd emoncms-docker
 	$ git clone https://github.com/emoncms/emoncms
 
-Clone in optional modules (graph and dashboard are highly recommended):
+Clone in optional modules (`graph` and `dashboard` are highly recommended):
 
 	$ git clone https://github.com/emoncms/dashboard emoncms/Modules/dashboard
-    $ git clone https://github.com/emoncms/graph emoncms/Modules/graph
+	$ git clone https://github.com/emoncms/graph emoncms/Modules/graph
 
 *Further modules can be found in the [emoncms git repo](https://github.com/emoncms/) e.g. backup, wifi etc.*
  
@@ -68,16 +67,24 @@ File structure should look like:
 ¦       +-- <optional-modules> e.g dashboard
 ```
 
+#### Customise config
 
+#### MYSQL Database Credentials 
 
-### Build / update Docker container
+For development the default settings in `default.docker.env` are used. For production a `.env` file should be created with secure database Credentials. See Production setup info below.
+
+#### PHP Settings
+
+Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe) 
+
+#### Build / update Docker container
 
 Required on first run or if `Dockerfile` or `Docker-compose.yml` are changed:
 
 	$ docker-compose build
 
 
-#### Start Emoncms containers
+### Start Emoncms containers
 
 Start as foreground service:
 
@@ -89,13 +96,13 @@ Start as background service:
 
 	$ docker-compose up -d
 
-This will start two containers `emon_web` which is based on the official docker [PHP-Apache image](https://hub.docker.com/_/php
+This will start two containers `emon_web` which is based on the official docker [PHP-Apache image](https://hub.docker.com/_/php)
 
 ***
 
-# Docker Compose Setup
+## Docker Compose Setup
 
-## Development Vs Production
+### Development Vs Production
 
 There are three docker compose files:
 
@@ -103,11 +110,11 @@ There are three docker compose files:
 2. `docker-compose.override.yml`
 3. `docker-compose.prod.yml`
 
-The first `docker-compose.yml` sets up the base config, things that are common to both development and production.
+The first `docker-compose.yml` defines the base config; things that are common to both development and production.
 
-The second file `docker-compose.override.yml` sets up the development enviroment e.g. use `default.docker-env` enviroment variables and mount emoncms files from local file-system instead of copy
+The second file `docker-compose.override.yml` defines additional things for development enviroment e.g. use `default.docker-env` enviroment variables and *mount* emoncms files from local file-system instead of *copy* into container.
 
-The third file adds `docker-compose.prod.yml` adds production specific setup.
+The third file `docker-compose.prod.yml` defines production specific setup e.g. expose port 80 and *copy* in files instead of *mount*. The production docker-compose file  is `docker-compose.prod.yml` instead of `docker-compose.override.yml` when the Emoncms Docker contains are ran as 'proudcution' 
 
 This setup is based on the recomended Docker method, see [Docker Multiple Compose Files Docs](https://docs.docker.com/compose/extends/#multiple-compose-files).
 
@@ -120,25 +127,25 @@ To run the production compose setup run:
     docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 
-## Files, storage & database info
+### Files, storage & database info
 
-### Files
+#### Files
 
 **By default when running the development compose enviroment (see above) Emoncms files are mounted from the host file system in the `emon_web` Docker container at startup.** This is desirable for dev. For production / deployment / clean testing run production docker compose (see above). This will **copy** emoncms files into the docker container on first run. Any changes made to the files inside the container will be lost when the container is stopped.
 
 
-### Storage
+#### Storage
 
 Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker file volumes e.g.`emon-phpfiwa`. Data stored in these folders is persistent if the container is stopped / started but cannot be accessed outside of the container.
 
-### Database
+#### Database
 
 Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`emon-db-data`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container.
 
 
 ***
 
-## Useful Docker commands
+### Useful Docker commands
 
 Show running containers
 
