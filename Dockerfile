@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN a2enmod rewrite
 
+# Add custom PHP config
+COPY config/php.ini /usr/local/etc/php/
+
 # Copy in emoncms files, files can be mounted from local FS for dev see docker-compose
 ADD ./emoncms /var/www/html
 
@@ -21,6 +24,11 @@ ADD ./emoncms /var/www/html
 ADD docker.settings.php /var/www/html
 WORKDIR /var/www/html
 RUN cp docker.settings.php settings.php
+
+# Create Emoncms logfile
+RUN touch /var/log/emoncms.log
+RUN chmod 666 /var/log/emoncms.log
+
 
 # TODO
 # consider alpine lightweight image
