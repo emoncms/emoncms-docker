@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
               php5- mcrypt \
               php5-mysql \
               libmcrypt-dev \
+              git-core\
     # Enable PHP modules
     && docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
 
@@ -17,8 +18,14 @@ RUN a2enmod rewrite
 # Add custom PHP config
 COPY config/php.ini /usr/local/etc/php/
 
+# NOT USED ANYMORE - GIT CLONE INSTEAD
 # Copy in emoncms files, files can be mounted from local FS for dev see docker-compose
-ADD ./emoncms /var/www/html
+# ADD ./emoncms /var/www/html
+
+# Clone in master Emoncms repo & modules - overwritten in development with local FS files
+RUN git clone https://github.com/emoncms/emoncms.git /var/www/html
+RUN git clone https://github.com/emoncms/dashboard.git /var/www/html/Modules/dashboard
+RUN git clone https://github.com/emoncms/graph.git /var/www/html/Modules/graph
 
 # Copy in docker settings
 ADD docker.settings.php /var/www/html

@@ -10,11 +10,13 @@ services:
     env_file:
      # Use .env with secure db credentials (needs creating), ignored by git
      - '.docker-env'
+    restart: always
     environment:
       # Set production enviroment variable flag, not currently used for anything but might be of use in the future
       PRODUCTION: 'true'
     
   db:
+    restart: always
     env_file:
      - '.docker-env'
   

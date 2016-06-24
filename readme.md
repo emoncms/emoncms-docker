@@ -1,4 +1,4 @@
-Using Docker it's possible to fire up Emoncms on a bare system (assuming Docker is installed) in a couple of minutes with all the LAMP installing and config taken care of. 
+Using Docker it's possible to fire up Emoncms on a bare system (assuming Docker is installed) in a couple of minutes with all the LAMP installing and config taken care of.
 
 This is great for development since it's possible to play about with Emoncms running in a Docker container without fear of messing up your main Emoncms install.
 
@@ -47,6 +47,8 @@ clone `emoncms-docker` (this repo):
 
 Inside `emoncms-docker` clone emoncms-core:
 
+**Note: If the container(s) are only being used for production / testing there is no need to clone emoncms core & modules since by default the master branch is cloned when the container(s) are built (see Dockerfile), this cloned 'snapshot' is overwritten by the Emoncms files mounted from local file-system when running development docker-compose (default)**
+
 	$ cd emoncms-docker
 	$ git clone https://github.com/emoncms/emoncms
 
@@ -73,13 +75,13 @@ File structure should look like:
 
 #### Customise config
 
-#### MYSQL Database Credentials 
+#### MYSQL Database Credentials
 
 For development the default settings in `default.docker.env` are used. For production a `.env` file should be created with secure database Credentials. See Production setup info below.
 
 #### PHP Settings
 
-Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe) 
+Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe)
 
 #### Build / update Docker container
 
@@ -118,7 +120,7 @@ The first `docker-compose.yml` defines the base config; things that are common t
 
 The second file `docker-compose.override.yml` defines additional things for development enviroment e.g. use `default.docker-env` enviroment variables and *mount* emoncms files from local file-system instead of *copy* into container.
 
-The third file `docker-compose.prod.yml` defines production specific setup e.g. expose port 80 and *copy* in files instead of *mount*. The production docker-compose file  is `docker-compose.prod.yml` instead of `docker-compose.override.yml` when the Emoncms Docker contains are ran as 'proudcution' 
+The third file `docker-compose.prod.yml` defines production specific setup e.g. expose port 80 and *copy* in files instead of *mount*. The production docker-compose file  is `docker-compose.prod.yml` instead of `docker-compose.override.yml` when the Emoncms Docker contains are ran as 'proudcution'
 
 This setup is based on the recomended Docker method, see [Docker Multiple Compose Files Docs](https://docs.docker.com/compose/extends/#multiple-compose-files).
 

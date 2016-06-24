@@ -17,5 +17,3 @@ services:
   db:
     env_file:
       - 'default.docker-env'
-  
-  
