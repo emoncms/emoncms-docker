@@ -75,11 +75,11 @@ File structure should look like:
 
 #### Customise config
 
-#### MYSQL Database Credentials
+##### MYSQL Database Credentials
 
 For development the default settings in `default.docker.env` are used. For production a `.env` file should be created with secure database Credentials. See Production setup info below.
 
-#### PHP Settings
+##### PHP Config
 
 Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe)
 
@@ -96,19 +96,27 @@ Start as foreground service:
 
 	$ docker-compose up
 
-Stop with [CTRL + c)
+Stop with [CTRL + c]
+
+**That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
 
 Start as background service:
 
 	$ docker-compose up -d
 
-This will start two containers `emon_web` which is based on the official docker [PHP-Apache image](https://hub.docker.com/_/php)
+**Docker compose up will start two containers:** 
+
+1. `emon_web` which is based on the official [Docker PHP-Apache image](https://hub.docker.com/_/php) 
+2. `emon_db` which is based on the offical [Docker MYSQL image](https://hub.docker.com/_/mysql)
 
 ***
+***
 
-## Docker Compose Setup
+### How Docker Compose works...
 
-### Development Vs Production
+Infomation about how docker-copose workin in Emoncms Docker.
+
+#### Development Vs Production
 
 There are three docker compose files:
 
@@ -124,16 +132,22 @@ The third file `docker-compose.prod.yml` defines production specific setup e.g. 
 
 This setup is based on the recomended Docker method, see [Docker Multiple Compose Files Docs](https://docs.docker.com/compose/extends/#multiple-compose-files).
 
+#### Development
+
 The development enviroment with the base + override compose is used by default e.g:
 
-    docker-compose up
+    $ docker-compose up
+
+#### Production 
 
 To run the production compose setup run:
 
-    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+    $ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 
 ### Files, storage & database info
+
+Infomation about how files and databases work in Emoncms Docker.
 
 #### Files
 
