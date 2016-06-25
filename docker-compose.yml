@@ -1,10 +1,13 @@
-# Base docker compose, added to by docker-compose.override or docker-compose.prd. See Readme.md
+# Base docker compose, added to by docker-compose.override or docker-compose.prod. See Readme.md
 
 version: '2'
 
 services:
+
+  # PHP & apache container using offical Docker PHP iamge
   web:
-    # Build php & apache container see Dockerflile
+    # If pre-built image from docker hub exists then use that (docker pull openenergymonitor/emoncms) if not Buildcontainer see Dockerflile
+    image: openenergymonitor/emoncms
     build: .
     volumes:
       # mount docker volumes persistant inside docker container
@@ -15,9 +18,12 @@ services:
       # Link to MYSQL DB (see below)
       - db
 
+  # MYSQL Database
   db:
+    # Official MYSQL docker image
     image: mysql:5.5
     ports:
+      # Internal Docker posts
       - 3306:3306
     environment:
       - "MYSQL_HOST=localhost"

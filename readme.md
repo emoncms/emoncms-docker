@@ -26,18 +26,30 @@ $ docker run hello-world
 
 You should now be able to `docker run hello-world` without `sudo`.
 
-## Use Docker image
 
-*Pull emoncms image from docker hub (yet to be pushed)*
+# Quick start
 
-Pulling the emoncms image from docker up is the easiest way to fire up emoncms for production* or testing. For development you will probably want to build the image yourself to have full control.
+## 2. Pull Emoncms Docker image
+
+Pull the [pre-built emoncms image from docker Hub](https://hub.docker.com/r/openenergymonitor/emoncms). This saves time since the image does not need to be built before first run.
+
+    $ docker pull openenergymonitor/emoncms
+
 
 \* **Docker image is currently in early testing and is NOT yet recommended for production**
 
+## 3. Run the containers using docker copose
 
+```
+$ git clone https://github.com/emoncms/emoncms-docker
+$ cd emoncms-docker
+$ docker-compose up
+```
+
+
+***
 
 ## Build Emoncms Docker Containers
-
 
 #### Git Clone
 
@@ -96,7 +108,7 @@ Start as foreground service:
 
 	$ docker-compose up
 
-Stop with [CTRL + c)
+Stop with [CTRL + c]
 
 Start as background service:
 
