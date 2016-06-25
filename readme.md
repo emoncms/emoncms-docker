@@ -104,9 +104,9 @@ Start as background service:
 
 	$ docker-compose up -d
 
-**Docker compose up will start two containers:** 
+**Docker compose up will start two containers:**
 
-1. `emon_web` which is based on the official [Docker PHP-Apache image](https://hub.docker.com/_/php) 
+1. `emon_web` which is based on the official [Docker PHP-Apache image](https://hub.docker.com/_/php)
 2. `emon_db` which is based on the offical [Docker MYSQL image](https://hub.docker.com/_/mysql)
 
 ***
@@ -138,7 +138,7 @@ The development enviroment with the base + override compose is used by default e
 
     $ docker-compose up
 
-#### Production 
+#### Production
 
 To run the production compose setup run:
 
@@ -160,8 +160,16 @@ Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker
 
 #### Database
 
-Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`emon-db-data`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container.
+Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`emon-db-data`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container. If access to the database files for debugging, you can fire up a new container and attach the `emon-db-data` docker volume containing the db files:
 
+```
+docker run \
+  -it \
+  --rm \
+  -v emon-db-data:/var/lib/mysql \
+  mysql \
+  bash
+```
 
 ***
 
