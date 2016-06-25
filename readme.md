@@ -1,8 +1,11 @@
-Using Docker it's possible to fire up Emoncms on a bare system (assuming Docker is installed) in a couple of minutes with all the LAMP installing and config taken care of.
+Using Docker it's possible to fire up Emoncms on a bare system (assuming Docker is installed) in a couple of minutes with all the LAMP install & config taken care of.
 
 This is great for development since it's possible to play about with Emoncms running in a Docker container without fear of messing up your main Emoncms install.
 
 In the future, Docker can even be used as a deployment tool for Emoncms. In theory, it should be possible to deploy the Docker container on any server within minutes :-)
+
+We have taken a multi-container approach with php-apache running in one container and the MYSQL database running in another. The containers are linked using [docker-compose]((https://docs.docker.com/compose).
+
 
 [**To do list**](https://github.com/emoncms/emoncms-docker/issues/2)
 
@@ -29,16 +32,16 @@ You should now be able to `docker run hello-world` without `sudo`.
 
 # Quick start
 
-## 2. Pull Emoncms Docker image
+## 1. Pull Emoncms Docker image
 
 Pull the [pre-built emoncms image from docker Hub](https://hub.docker.com/r/openenergymonitor/emoncms). This saves time since the image does not need to be built before first run.
 
     $ docker pull openenergymonitor/emoncms
 
 
-\* **Docker image is currently in early testing and is NOT yet recommended for production**
+## 2. Run the Emoncms containers using docker-compose
 
-## 3. Run the containers using docker copose
+Docker-compose will fire up and link the emoncms container (PHP & Apache0) and the MYSQL container.
 
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
@@ -46,6 +49,9 @@ $ cd emoncms-docker
 $ docker-compose up
 ```
 
+**That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
+
+\* **Note: Docker image is currently in early testing and is NOT yet recommended for production**
 
 ***
 
@@ -87,11 +93,11 @@ File structure should look like:
 
 #### Customise config
 
-#### MYSQL Database Credentials
+##### MYSQL Database Credentials
 
 For development the default settings in `default.docker.env` are used. For production a `.env` file should be created with secure database Credentials. See Production setup info below.
 
-#### PHP Settings
+##### PHP Config
 
 Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe)
 
@@ -110,17 +116,27 @@ Start as foreground service:
 
 Stop with [CTRL + c]
 
+
+**That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
+
+
 Start as background service:
 
 	$ docker-compose up -d
 
-This will start two containers `emon_web` which is based on the official docker [PHP-Apache image](https://hub.docker.com/_/php)
+**Docker compose up will start two containers:**
+
+1. `emon_web` which is based on the official [Docker PHP-Apache image](https://hub.docker.com/_/php)
+2. `emon_db` which is based on the offical [Docker MYSQL image](https://hub.docker.com/_/mysql)
 
 ***
+***
 
-## Docker Compose Setup
+### How Docker Compose works...
 
-### Development Vs Production
+Infomation about how docker-copose workin in Emoncms Docker.
+
+#### Development Vs Production
 
 There are three docker compose files:
 
@@ -136,16 +152,22 @@ The third file `docker-compose.prod.yml` defines production specific setup e.g. 
 
 This setup is based on the recomended Docker method, see [Docker Multiple Compose Files Docs](https://docs.docker.com/compose/extends/#multiple-compose-files).
 
+#### Development
+
 The development enviroment with the base + override compose is used by default e.g:
 
-    docker-compose up
+    $ docker-compose up
+
+#### Production
 
 To run the production compose setup run:
 
-    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+    $ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 
 ### Files, storage & database info
+
+Infomation about how files and databases work in Emoncms Docker.
 
 #### Files
 
@@ -158,35 +180,4 @@ Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker
 
 #### Database
 
-Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`emon-db-data`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container.
-
-
-***
-
-### Useful Docker commands
-
-Show running containers
-
-	$ docker ps
-
-Stop / kill all running containers:
-
-	$ docker stop $(docker ps -a -q)
-
-	$ docker kill $(docker ps -a -q)
-
-Remove all containers:
-
-e.g. emon_web, emon_db
-
-	$ docker rm $(docker ps -a -q)
-
-Remove all images:
-
-e.g. Base images: php-apache, mysql, Ubuntu pulled from Dockerhub
-
-	$ docker rmi $(docker images -q)
-
-Attach a shell to a running container:
-
-	$ docker exec -it emoncms_web_1 /bin/bash
+Database storage `/var/lib/mysql/da
