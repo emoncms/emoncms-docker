@@ -4,7 +4,7 @@ This is great for development since it's possible to play about with Emoncms run
 
 In the future, Docker can even be used as a deployment tool for Emoncms. In theory, it should be possible to deploy the Docker container on any server within minutes :-)
 
-We have taken a multi-container approach with php-apache running in one container and the MYSQL database running in another. The containers are linked using [docker-compose]((https://docs.docker.com/compose).
+We have taken a multi-container approach with php-apache running in one container and the MYSQL database running in another. The containers are linked using [docker-compose](https://docs.docker.com/compose).
 
 
 [**To do list**](https://github.com/emoncms/emoncms-docker/issues/2)
@@ -41,7 +41,7 @@ Pull the [pre-built emoncms image from docker Hub](https://hub.docker.com/r/open
 
 ## 2. Run the Emoncms containers using docker-compose
 
-Docker-compose will fire up and link the emoncms container (PHP & Apache0) and the MYSQL container.
+Docker-compose will fire up and link the emoncms container (PHP & Apache) and the MYSQL container.
 
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
@@ -51,7 +51,7 @@ $ docker-compose up
 
 **That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
 
-\* **Note: Docker image is currently in early testing and is NOT yet recommended for production**
+\* *Note: Docker image is currently in early testing and is NOT yet recommended for production*
 
 ***
 
@@ -59,13 +59,13 @@ $ docker-compose up
 
 #### Git Clone
 
-clone `emoncms-docker` (this repo):
+If you havent already done so clone `emoncms-docker` (this repo):
 
 	$ git clone https://github.com/emoncms/emoncms-docker
 
 Inside `emoncms-docker` clone emoncms-core:
 
-**Note: If the container(s) are only being used for production / testing there is no need to clone emoncms core & modules since by default the master branch is cloned when the container(s) are built (see Dockerfile), this cloned 'snapshot' is overwritten by the Emoncms files mounted from local file-system when running development docker-compose (default)**
+*Note: If Emoncms Docker being used for production / testing (i.e modifing the Emoncms files at run-time is not required) there is no need to clone emoncms core & modules since by default the Emoncms git master branch is cloned when the containers are built (see Dockerfile), this cloned 'snapshot' is then overwritten by the Emoncms files mounted from local file-system when running development docker-compose (default)*
 
 	$ cd emoncms-docker
 	$ git clone https://github.com/emoncms/emoncms
