@@ -180,4 +180,35 @@ Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker
 
 #### Database
 
-Database storage `/var/lib/mysql/da
+Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`emon-db-data`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container.
+
+
+***
+
+### Useful Docker commands
+
+Show running containers
+
+	$ docker ps
+
+Stop / kill all running containers:
+
+	$ docker stop $(docker ps -a -q)
+
+	$ docker kill $(docker ps -a -q)
+
+Remove all containers:
+
+e.g. emon_web, emon_db
+
+	$ docker rm $(docker ps -a -q)
+
+Remove all images:
+
+e.g. Base images: php-apache, mysql, Ubuntu pulled from Dockerhub
+
+	$ docker rmi $(docker images -q)
+
+Attach a shell to a running container:
+
+	$ docker exec -it emoncms_web_1 /bin/bash
