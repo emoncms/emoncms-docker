@@ -27,7 +27,7 @@ $ sudo usermod -aG docker <YOUR-USER-NAME>
 $ docker run hello-world
 ```
 
-You should now be able to `docker run hello-world` without `sudo`.
+After restarting terminal (logout & logback in), you should now be able to `docker run hello-world` without `sudo`.
 
 
 # Quick start
