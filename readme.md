@@ -32,20 +32,12 @@ After restarting terminal (logout & logback in), you should now be able to `dock
 
 # Quick start
 
-## 1. Pull Emoncms Docker image
-
-Pull the [pre-built emoncms image from docker Hub](https://hub.docker.com/r/openenergymonitor/emoncms). This saves time since the image does not need to be built before first run.
-
-    $ docker pull openenergymonitor/emoncms
-
-
-## 2. Run the Emoncms containers using docker-compose
-
 Docker-compose will fire up and link the emoncms container (PHP & Apache) and the MYSQL container.
 
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
 $ cd emoncms-docker
+$ docker-compose pull # downloads the images to save building them locally
 $ docker-compose up
 ```
 
