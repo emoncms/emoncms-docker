@@ -9,9 +9,12 @@ RUN apt-get update && apt-get install -y \
               php5- mcrypt \
               php5-mysql \
               libmcrypt-dev \
-              git-core\
-    # Enable PHP modules
-    && docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
+              git-core 
+
+# Enable PHP modules
+RUN docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
+RUN pecl install redis-2.2.8 \
+  \ && docker-php-ext-enable redis
 
 RUN a2enmod rewrite
 

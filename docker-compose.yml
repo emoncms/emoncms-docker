@@ -17,6 +17,7 @@ services:
     links:
       # Link to MYSQL DB (see below)
       - db
+      - redis
 
   # MYSQL Database
   db:
@@ -29,6 +30,11 @@ services:
       - "MYSQL_HOST=localhost"
     volumes:
       - emon-db-data:/var/lib/mysql/data
+  redis:
+    # Official redis image
+    image: redis:3.0.7
+    volumes:
+      - emon-redis-data:/data
 
 volumes:
   emon-phpfiwa:
@@ -38,4 +44,6 @@ volumes:
   emon-phptimeseries:
     driver: local
   emon-db-data:
+    driver: local
+  emon-redis-data:
     driver: local
