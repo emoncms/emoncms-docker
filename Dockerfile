@@ -1,4 +1,5 @@
 # Offical Docker PHP & Apache image https://hub.docker.com/_/php/
+# To do: fix compatiability with php 7
 FROM php:5.6-apache
 
 # Install deps
@@ -9,7 +10,7 @@ RUN apt-get update && apt-get install -y \
               php5- mcrypt \
               php5-mysql \
               libmcrypt-dev \
-              git-core 
+              git-core
 
 # Enable PHP modules
 RUN docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext

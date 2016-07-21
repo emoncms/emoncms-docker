@@ -22,10 +22,8 @@ services:
   # MYSQL Database
   db:
     # Official MYSQL docker image
-    image: mysql:5.5
-    ports:
-      # Internal Docker posts
-      - 3306:3306
+    # To do: make compatiable with 5.7
+    image: mysql:5.6
     environment:
       - "MYSQL_HOST=localhost"
     volumes:
