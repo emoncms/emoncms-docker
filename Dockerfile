@@ -9,9 +9,12 @@ RUN apt-get update && apt-get install -y \
               php5- mcrypt \
               php5-mysql \
               libmcrypt-dev \
-              git-core\
-    # Enable PHP modules
-    && docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
+              git-core 
+
+# Enable PHP modules
+RUN docker-php-ext-install -j$(nproc) mysql mysqli curl json mcrypt gettext
+RUN pecl install redis-2.2.8 \
+  \ && docker-php-ext-enable redis
 
 RUN a2enmod rewrite
 
@@ -27,10 +30,9 @@ RUN git clone https://github.com/emoncms/emoncms.git /var/www/html
 RUN git clone https://github.com/emoncms/dashboard.git /var/www/html/Modules/dashboard
 RUN git clone https://github.com/emoncms/graph.git /var/www/html/Modules/graph
 
-# Copy in docker settings
-ADD docker.settings.php /var/www/html
+# Copy in settings from defaults
 WORKDIR /var/www/html
-RUN cp docker.settings.php settings.php
+RUN cp default.settings.php settings.php
 
 # Create folders & set permissions for feed-engine data folders (mounted as docker volumes in docker-compose)
 RUN mkdir /var/lib/phpfiwa

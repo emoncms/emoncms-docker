@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Check out the requisite modules for a working emoncms setup.
+#
+git clone https://github.com/emoncms/emoncms.git ./emoncms
+git clone https://github.com/emoncms/dashboard.git ./emoncms/Modules/dashboard
+git clone https://github.com/emoncms/graph.git ./emoncms/Modules/graph
+
+# The default config works just fine within Docker
+mv  ./emoncms/default.settings.php ./emoncms/settings.php

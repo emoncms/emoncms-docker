@@ -51,25 +51,17 @@ $ docker-compose up
 
 #### Git Clone
 
-If you havent already done so clone `emoncms-docker` (this repo):
-
-	$ git clone https://github.com/emoncms/emoncms-docker
-
-Inside `emoncms-docker` clone emoncms-core:
-
 *Note: If Emoncms Docker being used for production / testing (i.e modifing the Emoncms files at run-time is not required) there is no need to clone emoncms core & modules since by default the Emoncms git master branch is cloned when the containers are built (see Dockerfile), this cloned 'snapshot' is then overwritten by the Emoncms files mounted from local file-system when running development docker-compose (default)*
 
-	$ cd emoncms-docker
-	$ git clone https://github.com/emoncms/emoncms
+Run the following script to clone the `emoncms` repository along with the `dashboard` and `graph` modules:
 
-Clone in optional modules (`graph` and `dashboard` are highly recommended):
-
-	$ git clone https://github.com/emoncms/dashboard emoncms/Modules/dashboard
-	$ git clone https://github.com/emoncms/graph emoncms/Modules/graph
+```bash
+./bin/setup_dev_repositories
+```
 
 *Further modules can be found in the [emoncms git repo](https://github.com/emoncms/) e.g. backup, wifi etc.*
  
-File structure should look like:
+The fiile structure should look like:
 
 ```
 +-- emoncms-docker
