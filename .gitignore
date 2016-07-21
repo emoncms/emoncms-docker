@@ -1,2 +1,3 @@
 emoncms/
 .docker-env
+*.~
