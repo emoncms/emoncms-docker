@@ -61,7 +61,7 @@ Run the following script to clone the `emoncms` repository along with the `dashb
 
 *Further modules can be found in the [emoncms git repo](https://github.com/emoncms/) e.g. backup, wifi etc.*
  
-The fiile structure should look like:
+The file structure should look like:
 
 ```
 +-- emoncms-docker
