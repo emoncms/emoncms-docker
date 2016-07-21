@@ -1,7 +1,17 @@
 # Default docker enviroment variables, change in production enviroment
 
+# MySQL database 
 MYSQL_HOST=db
+MYSQL_PORT=3306
 MYSQL_DATABASE=emoncms
 MYSQL_USER=emoncms
 MYSQL_PASSWORD=YOUR_SECURE_PASSWORD
 MYSQL_RANDOM_ROOT_PASSWORD=yes
+
+# Redis
+REDIS_ENABLED=true
+REDIS_HOST=redis
+REDIS_PORT=6379
+# At the moment Docker doesn't honour the REDIS_AUTH variable, so it will always be passwordless
+# REDIS_AUTH=
+REDIS_PREFIX='emoncms'

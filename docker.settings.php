@@ -1,5 +1,7 @@
 <?php
 
+// Docker Emoncms Settings
+
 //1 #### Mysql database settings
     $server   = $_ENV["MYSQL_HOST"];
     $database = $_ENV["MYSQL_DATABASE"];
@@ -12,11 +14,12 @@
 
 
 //2 #### Redis
-    $redis_enabled = false;
-    $redis_server = array( 'host'   => 'localhost',
-                           'port'   => 6379,
-                           'auth'   => '',
-                           'prefix' => 'emoncms');
+    // Note that boolean values need to be coerced into 'real' booleans from their string values
+    $redis_enabled =  isset($_ENV["REDIS_ENABLED"]) ? $_ENV["REDIS_ENABLED"] === 'true' : false;
+    $redis_server = array(  'host'   =>  isset($_ENV["REDIS_HOST"])   ? $_ENV["REDIS_HOST"]   : 'localhost',
+                            'port'   =>  isset($_ENV["REDIS_PORT"])   ? $_ENV["REDIS_PORT"]   : 6379,
+                            'auth'   =>  isset($_ENV["REDIS_AUTH"])   ? $_ENV["REDIS_AUTH"]   : '',
+                            'prefix' =>  isset($_ENV["REDIS_PREFIX"]) ? $_ENV["REDIS_PREFIX"] : 'emoncms');
 
 
 //3 #### MQTT
