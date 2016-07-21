@@ -37,7 +37,7 @@ Docker-compose will fire up and link the emoncms container (PHP & Apache) and th
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
 $ cd emoncms-docker
-$ docker-compose pull # downloads the images to save building them locally
+$ docker-compose pull
 $ docker-compose up
 ```
 
