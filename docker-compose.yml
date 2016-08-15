@@ -7,7 +7,7 @@ services:
   # PHP & apache container using offical Docker PHP iamge
   web:
     # If pre-built image from docker hub exists then use that (docker pull openenergymonitor/emoncms) if not Buildcontainer see Dockerflile
-    image: openenergymonitor/emoncms
+    image: beaylott/emoncms
     build: .
     volumes:
       # mount docker volumes persistant inside docker container
@@ -22,15 +22,15 @@ services:
   # MYSQL Database
   db:
     # Official MYSQL docker image
-    # To do: make compatiable with 5.7
-    image: mysql:5.6
+    # To do: make compatiable with 5.7 (B: or even 5.6?!)
+    image: beaylott/rpi-mysql:5.5
     environment:
       - "MYSQL_HOST=localhost"
     volumes:
       - emon-db-data:/var/lib/mysql/data
   redis:
     # Official redis image
-    image: redis:3.0.7
+    image: hypriot/rpi-redis:3.0.4
     volumes:
       - emon-redis-data:/data
 

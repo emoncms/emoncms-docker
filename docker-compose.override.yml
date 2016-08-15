@@ -6,7 +6,7 @@ services:
   web:
     ports:
       # Expose Emoncms on localhost port 8080
-      - 8080:80
+      - 4000:80
     volumes:
       #mount emoncms files from local FS for dev
       - ./emoncms:/var/www/html

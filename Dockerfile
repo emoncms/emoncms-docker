@@ -1,6 +1,6 @@
 # Offical Docker PHP & Apache image https://hub.docker.com/_/php/
 # To do: fix compatiability with php 7
-FROM php:5.6-apache
+FROM nidorpi/rpi-php:5.6-apache
 
 # Install deps
 RUN apt-get update && apt-get install -y \
