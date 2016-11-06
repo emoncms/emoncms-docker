@@ -32,7 +32,7 @@ After restarting terminal (logout & logback in), you should now be able to `dock
 
 # Quick start
 
-Docker-compose will fire up and link the emoncms container (PHP & Apache) and the MYSQL container.
+Pull [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonitor/emoncms/) from docker hub and use Docker-compose to link the emoncms container (PHP & Apache) to the MYSQL container.
 
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
