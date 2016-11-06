@@ -43,7 +43,7 @@ $ docker-compose up
 
 **That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
 
-\* *Note: Docker image is currently in early testing and is NOT yet recommended for production*
+If you get an error `bind: address already in use`, this means there is already a process on the host machine listening on port 8080. You can check what processes are listening on ports by running `sudo netstat -plnt`. There are two options, either change the [emoncms web container port](https://github.com/emoncms/emoncms-docker/blob/master/docker-compose.override.yml#L9) to use a different port then rebuild the container or kill the process currently running on the host machine using the same port.   
 
 ***
 
