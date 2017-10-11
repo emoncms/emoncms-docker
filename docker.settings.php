@@ -66,6 +66,9 @@
         ),
         'phptimeseries'=>array(
             'datadir' => '/var/lib/phptimeseries/'
+        ),
+        'cassandra'=>array(
+            'keyspace' => 'emoncms'
         )
     );
 
@@ -76,6 +79,7 @@
 //5 #### User Interface settings
     // Theme location (folder located under Theme/, and must have the same structure as the basic one)
     $theme = "basic";
+    $themecolor = "standard";
 
     // Favicon filenme in Theme/$theme
     $favicon = "favicon.png";
@@ -157,6 +161,9 @@
 
     // field separator
     $csv_field_separator = ",";
+	
+    // set true on docker installations
+    $allow_config_env_vars = true;
 
     // Dont change - developer updates this when the config format changes
-    $config_file_version = "8";
+    $config_file_version = "10";
