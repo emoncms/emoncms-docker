@@ -61,7 +61,7 @@ Run the following script to clone the `emoncms` repository along with the `dashb
 ```
 
 *Further modules can be found in the [emoncms git repo](https://github.com/emoncms/) e.g. backup, wifi etc.*
- 
+
 The file structure should look like:
 
 ```
@@ -196,4 +196,4 @@ e.g. Base images: php-apache, mysql, Ubuntu pulled from Dockerhub
 
 Attach a shell to a running container:
 
-	$ docker exec -it emoncms_web_1 /bin/bash
+	$ docker exec -it emoncmsdocker_web_1 /bin/bash
