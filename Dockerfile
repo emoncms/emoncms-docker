@@ -31,9 +31,8 @@ RUN git clone https://github.com/emoncms/emoncms.git /var/www/html
 RUN git clone https://github.com/emoncms/dashboard.git /var/www/html/Modules/dashboard
 RUN git clone https://github.com/emoncms/graph.git /var/www/html/Modules/graph
 
-# Copy in settings from defaults
-WORKDIR /var/www/html
-RUN cp default.settings.php settings.php
+
+COPY docker.settings.php /var/www/html/settings.php
 
 # Create folders & set permissions for feed-engine data folders (mounted as docker volumes in docker-compose)
 RUN mkdir /var/lib/phpfiwa

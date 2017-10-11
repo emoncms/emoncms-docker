@@ -37,12 +37,31 @@ Pull [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonit
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
 $ cd emoncms-docker
+$ docker pull openenergymonitor/emoncms:latest
+$ docker-compose up
+```
+
+**That's it! Emoncms should now be running in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
+
+### Setup dev enviroment
+
+If you want to edit the emoncms file (dev) it's best to clone them externally to docker then mount volume into the container:
+
+Uncommnet in `docker-compose.override.yml`:
+
+```
+volumes:
+  ##mount emoncms files from local FS for dev
+  - ./emoncms:/var/www/html
+```
+Then clone the repos into `./emoncms`
+
+```
 $ ./bin/setup_dev_repositories
 $ docker-compose pull
 $ docker-compose up
 ```
 
-**That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
 
 If you get an error `bind: address already in use`, this means there is already a process on the host machine listening on port 8080. You can check what processes are listening on ports by running `sudo netstat -plnt`. There are two options, either change the [emoncms web container port](https://github.com/emoncms/emoncms-docker/blob/master/docker-compose.override.yml#L9) to use a different port then rebuild the container or kill the process currently running on the host machine using the same port.   
 
