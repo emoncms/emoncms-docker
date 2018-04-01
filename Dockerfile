@@ -5,10 +5,6 @@ FROM php:5.6-apache
 # Install deps
 RUN apt-get update && apt-get install -y \
               libcurl4-gnutls-dev \
-              php5-curl \
-              php5-json \
-              php5- mcrypt \
-              php5-mysql \
               libmcrypt-dev \
               git-core
 
