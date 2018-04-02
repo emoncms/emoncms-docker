@@ -25,12 +25,12 @@
 //3 #### MQTT
     // The 'subscriber' topic format is rx/* - where * is the emoncms input node number.
     // The 'publisher' topic format is user selectable from the 'Publish to MQTT' input process, for example power/solar
-    $mqtt_enabled = false;          // Activate MQTT by changing to true
-    $mqtt_server = array( 'host'     => 'localhost',
-                          'port'     => 1883,
-                          'user'     => '',
-                          'password' => '',
-                          'basetopic'=> 'emon'
+    $mqtt_enabled = isset($_ENV["MQTT_ENABLED"]) ? $_ENV["MQTT_ENABLED"] === 'true' : false;
+    $mqtt_server = array( 'host'     => isset($_ENV["MQTT_HOST"])      ? $_ENV["MQTT_HOST"]      : 'localhost',
+                          'port'     => isset($_ENV["MQTT_PORT"])      ? $_ENV["MQTT_PORT"]      : 1883,
+                          'user'     => isset($_ENV["MQTT_USER"])      ? $_ENV["MQTT_USER"]      : '',
+                          'password' => isset($_ENV["MQTT_PASSWORD"])  ? $_ENV["MQTT_PASSWORD"]  : '',
+                          'basetopic'=> isset($_ENV["MQTT_BASETOPIC"]) ? $_ENV["MQTT_BASETOPIC"] : 'emon'
                           );
 
 

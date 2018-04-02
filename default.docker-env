@@ -15,3 +15,10 @@ REDIS_PORT=6379
 # At the moment Docker doesn't honour the REDIS_AUTH variable, so it will always be passwordless
 # REDIS_AUTH=
 REDIS_PREFIX='emoncms'
+
+# MQTT
+MQTT_ENABLED=false
+MQTT_HOST=localhost
+MQTT_USER=YOUR_MQTT_USER
+MQTT_PASSWORD=YOUR_MQTT_PASSWORD
+MQTT_BASETOPIC=emon
