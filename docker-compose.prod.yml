@@ -7,6 +7,9 @@ services:
     ports:
       # Expose Emoncms to the world on port 80
       - 80:80
+    volumes:
+      # Disable access to /php-info.php for security reasons
+      - /dev/null:/var/www/html/php-info.php
     env_file:
      # Use .env with secure db credentials (needs creating), ignored by git
      - '.docker-env'
