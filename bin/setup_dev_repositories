@@ -8,4 +8,4 @@ git clone https://github.com/emoncms/dashboard.git ./emoncms/Modules/dashboard
 git clone https://github.com/emoncms/graph.git ./emoncms/Modules/graph
 
 # Use docker settings
-cp  docker.settings.php ./emoncms/settings.php
+cp  docker.settings.ini ./emoncms/settings.ini
