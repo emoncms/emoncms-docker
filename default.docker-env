@@ -22,3 +22,7 @@ MQTT_HOST=localhost
 MQTT_USER=YOUR_MQTT_USER
 MQTT_PASSWORD=YOUR_MQTT_PASSWORD
 MQTT_BASETOPIC=emon
+
+# Feed
+PHPFINA_DIR=/var/opt/emoncms/phpfina/
+PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/

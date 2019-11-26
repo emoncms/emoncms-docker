@@ -11,9 +11,8 @@ services:
     build: .
     volumes:
       # mount docker volumes persistant inside docker container
-      - emon-phpfiwa:/var/lib/phpfiwa
-      - emon-phpfina:/var/lib/phpfina
-      - emon-phptimeseries:/var/lib/phptimeseries
+      - emon-phpfina:/var/opt/emoncms/phpfina
+      - emon-phptimeseries:/var/opt/emoncms/phptimeseries
     links:
       # Link to MYSQL DB (see below)
       - db

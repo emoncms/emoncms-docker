@@ -20,30 +20,35 @@ RUN a2enmod rewrite
 # Add custom PHP config
 COPY config/php.ini /usr/local/etc/php/
 
+# Add custom Apache config
+COPY config/emoncms.conf /etc/apache2/sites-available/emoncms.conf
+RUN a2dissite 000-default.conf
+RUN a2ensite emoncms
+
 # NOT USED ANYMORE - GIT CLONE INSTEAD
 # Copy in emoncms files, files can be mounted from local FS for dev see docker-compose
 # ADD ./emoncms /var/www/html
 
 # Clone in master Emoncms repo & modules - overwritten in development with local FS files
-RUN git clone https://github.com/emoncms/emoncms.git /var/www/html
-RUN git clone https://github.com/emoncms/dashboard.git /var/www/html/Modules/dashboard
-RUN git clone https://github.com/emoncms/graph.git /var/www/html/Modules/graph
-RUN git clone https://github.com/emoncms/app.git /var/www/html/Modules/app
+RUN mkdir /var/www/emoncms
+RUN git clone https://github.com/emoncms/emoncms.git /var/www/emoncms
+RUN git clone https://github.com/emoncms/dashboard.git /var/www/emoncms/Modules/dashboard
+RUN git clone https://github.com/emoncms/graph.git /var/www/emoncms/Modules/graph
+RUN git clone https://github.com/emoncms/app.git /var/www/emoncms/Modules/app
 
-COPY docker.settings.ini /var/www/html/settings.ini
+COPY docker.settings.ini /var/www/emoncms/settings.ini
 
 # Create folders & set permissions for feed-engine data folders (mounted as docker volumes in docker-compose)
-RUN mkdir /var/lib/phpfiwa
-RUN mkdir /var/lib/phpfina
-RUN mkdir /var/lib/phptimeseries
-RUN chown www-data:root /var/lib/phpfiwa
-RUN chown www-data:root /var/lib/phpfina
-RUN chown www-data:root /var/lib/phptimeseries
+RUN mkdir /var/opt/emoncms
+RUN mkdir /var/opt/emoncms/phpfina
+RUN mkdir /var/opt/emoncms/phptimeseries
+RUN chown www-data:root /var/opt/emoncms/phpfina
+RUN chown www-data:root /var/opt/emoncms/phptimeseries
 
 # Create Emoncms logfile
-RUN touch /var/log/emoncms.log
-RUN chmod 666 /var/log/emoncms.log
-
+RUN mkdir /var/log/emoncms
+RUN touch /var/log/emoncms/emoncms.log
+RUN chmod 666 /var/log/emoncms/emoncms.log
 
 # TODO
 # Add Pecl :
