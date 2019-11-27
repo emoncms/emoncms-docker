@@ -180,7 +180,7 @@ Infomation about how files and databases work in Emoncms Docker.
 
 #### Storage
 
-Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker file volumes e.g.`emon-phpfiwa`. Data stored in these folders is persistent if the container is stopped / started but cannot be accessed outside of the container.
+Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker file volumes e.g.`emon-phpfiwa`. Data stored in these folders is persistent if the container is stopped / started but cannot be accessed outside of the container. See below for how to list and remove docker volumes.
 
 #### Database
 
@@ -233,3 +233,23 @@ Remove single or all docker volumes
 Attach a shell to a running container:
 
 	$ docker exec -it emoncmsdocker_web_1 /bin/bash
+
+****
+
+## Pushing to docker hub 
+
+From: https://docs.docker.com/docker-hub/repos/
+
+```
+$ docker login --username=yourhubusername --email=youremail@company.com
+$ docker tag openenergymonitor/emoncms:<tag-name>
+$ docker push openenergymonitor/emoncms:<tag-name>
+```
+Tag name should be the Emoncms version e.g 10.x.x
+
+Also push the latest version using `latest` tag
+
+```
+$ docker tag openenergymonitor/emoncms:latest
+$ docker tag openenergymonitor/emoncms:latest
+```
