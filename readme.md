@@ -191,9 +191,13 @@ Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e
 
 ### Useful Docker commands
 
-Show running containers
+List running containers
 
 	$ docker ps
+	
+List all containsers 
+
+	$ docker ps -a
 
 Stop / kill all running containers:
 
@@ -206,7 +210,11 @@ Remove all containers:
 e.g. emon_web, emon_db
 
 	$ docker rm $(docker ps -a -q)
+	
+List all base images
 
+	$ docker image ls
+	
 Remove all images:
 
 e.g. Base images: php-apache, mysql, Ubuntu pulled from Dockerhub
