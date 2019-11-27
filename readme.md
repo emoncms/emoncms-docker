@@ -221,6 +221,15 @@ e.g. Base images: php-apache, mysql, Ubuntu pulled from Dockerhub
 
 	$ docker rmi $(docker images -q)
 
+List docker volumes (where data is stored e.g database) 
+
+ 	$ docker volume ls
+
+Remove single or all docker volumes
+
+	$ docker volume rm <name_of_volume>
+	$ docker volume prune
+
 Attach a shell to a running container:
 
 	$ docker exec -it emoncmsdocker_web_1 /bin/bash
