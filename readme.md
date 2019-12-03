@@ -127,6 +127,14 @@ Stop with [CTRL + c]
 Start as background service:
 
 	$ docker-compose up -d
+	
+Stop the containers
+
+	$ sudo docker-compose down 
+
+Stop the containser and delete the volumes (remove database and all stored data)
+
+	$ sudo docker-compose down -v
 
 **Docker compose up will start two containers:**
 
