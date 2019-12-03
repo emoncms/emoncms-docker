@@ -27,11 +27,20 @@ services:
       - "MYSQL_HOST=localhost"
     volumes:
       - emon-db-data:/var/lib/mysql
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+
   redis:
     # Official redis image
     image: redis:5
     volumes:
       - emon-redis-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
 
 volumes:
   emon-phpfiwa:
