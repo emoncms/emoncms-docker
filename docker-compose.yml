@@ -22,7 +22,7 @@ services:
   db:
     # Official MYSQL docker image
     # To do: make compatiable with 5.7
-    image: mariadb:10
+    image: mariadb:latest
     environment:
       - "MYSQL_HOST=localhost"
     volumes:
