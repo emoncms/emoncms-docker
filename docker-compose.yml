@@ -1,55 +1,171 @@
-# Base docker compose, added to by docker-compose.override or docker-compose.prod. See Readme.md
-
-version: '2'
-
+version: "2"
 services:
-
-  # PHP & apache container using offical Docker PHP iamge
-  web:
-    # If pre-built image from docker hub exists then use that (docker pull openenergymonitor/emoncms:latest) if not Buildcontainer see Dockerflile
-    image: openenergymonitor/emoncms:latest
-    build: .
+  php:
+    build:
+      context: ./php
+      args:
+        - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+        - "PHPFINA_DIR=${PHPFINA_DIR}"
+        - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
+        - "EMONCMS_DATA_DIR=${EMONCMS_DATA_DIR}"
+        - "LOG_LOCATION=${LOG_LOCATION}"
+        - "PHP_VERSION=${PHP_VERSION}"
+        - "EMONCMS_DIR=${EMONCMS_DIR}"
+        - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "EMONHUB_LOG=${EMONHUB_LOG}"
     volumes:
-      # mount docker volumes persistant inside docker container
-      - emon-phpfina:/var/opt/emoncms/phpfina
-      - emon-phptimeseries:/var/opt/emoncms/phptimeseries
-    links:
-      # Link to MYSQL DB (see below)
-      - db
-      - redis
-
-  # MYSQL Database
-  db:
-    # Official MYSQL docker image
-    # To do: make compatiable with 5.7
-    image: mariadb:latest
+      - "www:${WEB_DIR}"
+      - "phpfina:${PHPFINA_DIR}"
+      - "phptimeseries:${PHPTIMESERIES_DIR}"
+      - "emoncms-log:${LOG_LOCATION}"
+      - "emoncms-dir:${EMONCMS_DIR}"
+      - "emonhub-dir:${EMONHUB_DIR}"
+      - "var-lock:/var/lock"
+      - "emonhub-log:${EMONHUB_LOG}"
+      - "./shutdown_signal:/shutdown_signal"
     environment:
-      - "MYSQL_HOST=localhost"
-    volumes:
-      - emon-db-data:/var/lib/mysql
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
+      - "MYSQL_HOST=${MYSQL_HOST}"
+      - "MYSQL_PORT=${MYSQL_PORT}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
+      - "MQTT_ENABLED=${MQTT_ENABLED}"
+      - "MQTT_HOST=${MQTT_HOST}"
+      - "MQTT_USER=${MQTT_USER}"
+      - "MQTT_PORT=${MQTT_PORT}"
+      - "MQTT_PASSWORD=${MQTT_PASSWORD}"
+      - "MQTT_BASETOPIC=${MQTT_BASETOPIC}"
+      - "PHPFINA_DIR=${PHPFINA_DIR}"
+      - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
+      - "REDISBUFFER_ENABLED=${PREDISBUFFER_ENABLED}"
+      - "EMONCMS_DIR=${EMONCMS_DIR}"
+      - "OPENENERGYMONITOR_DIR=${OPENENERGYMONITOR_DIR}"
+      - "DEFAULT_LANG=${DEFAULT_LANG}"
+      - "LOG_ENABLED=${LOG_ENABLED}"
+      - "LOG_LOCATION=${LOG_LOCATION}"
+      - "LOG_LEVEL=${LOG_LEVEL}"
+      - "APPNAME=${APPNAME}"
+      - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
+      - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+      - "EMONHUB_DIR=${EMONHUB_DIR}"
+      - "EMONHUB_LOG=${EMONHUB_LOG}"
+    working_dir: ${WEB_DIR}/${APPNAME}
+    restart: always
+
+  apache:
+    build: ./apache
+    depends_on: ["php", "db", "redis"]
+    volumes: ["www:${WEB_DIR}"]
+    ports: ["${WEB_PORT}:80"]
+    restart: always
+
+  db:
+    build:
+        context: ./mysql
+        args:
+          - "MYSQL_DOCKER_IMAGE=${MYSQL_DOCKER_IMAGE}"
+    volumes: ["db:${MYSQL_DATA_DIR}"]
+    environment:
+      - "MYSQL_HOST=${MYSQL_HOST}"
+      - "MYSQL_PORT=${MYSQL_PORT}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}"
+      - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
+      #   - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    restart: always
 
   redis:
-    # Official redis image
     image: redis:5
+    volumes: ["redis:${REDIS_DATA_DIR}"]
+    environment:
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
+    restart: always
+
+  mqtt:
+    image: eclipse-mosquitto:1.6
+    environment:
+      - "MQTT_HOST=${MQTT_HOST}"
+      - "MQTT_USER=${MQTT_USER}"
+      - "MQTT_PORT=${MQTT_PORT}"
+      - "MQTT_PASSWORD=${MQTT_PASSWORD}"
+    restart: always
+
+  emoncms_mqtt:
+    build: ./emoncms_mqtt/
+    depends_on: ["php"]
+    command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/services/emoncms_mqtt/emoncms_mqtt.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+    restart: always
+
+  emoncms_feedwriter:
+    build: ./emoncms_feedwriter
+    depends_on: ["php"]
+    command: sh -c "sleep 5; SCRIPT_FILENAME=${WEB_DIR}/${APPNAME}/scripts/feedwriter.php REQUEST_METHOD=GET cgi-fcgi -bind -connect php:9000"
+    restart: always
+
+  emoncms_service-runner:
+    build: ./emoncms_service-runner
+    depends_on: ["redis","php"]
+    volumes: ["www:${WEB_DIR}"]
+    command: sh -c "sleep 5; python ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"
+    environment:
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
+    restart: always
+
+  emonhub:
+    build:
+      context: ./emonhub
+      args:
+        - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+        - "EMONCMS_DIR=${EMONCMS_DIR}"
+        - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "EMONHUB_LOG=${EMONHUB_LOG}"
+        - "REBOOT_HOST_TOGGLE=/reboot_request"
+    depends_on: ["mqtt"]
+    privileged: true
+    restart: always
     volumes:
-      - emon-redis-data:/data
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
+       - "www:${WEB_DIR}"
+       - "emoncms-dir:${EMONCMS_DIR}"
+       - "emonhub-dir:${EMONHUB_DIR}"
+       - "emoncms-log:${LOG_LOCATION}"
+       - "/boot:/boot"
+       - "./shutdown_signal:/shutdown_signal"
+    environment:
+      - "REDIS_ENABLED=${REDIS_ENABLED}"
+      - "REDIS_HOST=${REDIS_HOST}"
+      - "REDIS_PORT=${REDIS_PORT}"
+      - "REDIS_PREFIX=${REDIS_PREFIX}"
+      - "EMONCMS_DIR=${EMONCMS_DIR}"
+      - "EMONHUB_DIR=${EMONHUB_DIR}"
+      - "EMONHUB_LOG=${EMONHUB_LOG}"
+      - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+      - "REBOOT_HOST_TOGGLE=/reboot_request"
+    devices:
+      - "/dev/gpiomem:/dev/gpiomem"
+
 
 volumes:
-  emon-phpfiwa:
-    driver: local
-  emon-phpfina:
-    driver: local
-  emon-phptimeseries:
-    driver: local
-  emon-db-data:
-    driver: local
-  emon-redis-data:
-    driver: local
+  db:
+  www:
+  redis:
+  phpfina:
+  phptimeseries:
+  emoncms-log:
+  emoncms-dir:
+  emonhub-dir:
+  emonhub-log:
+  var-lock:
+ 
+

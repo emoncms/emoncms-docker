@@ -1,22 +1,8 @@
-# dev enviroment setup
-
-version: '2'
+version: "2"
 services:
-
-  web:
-    ports:
-      # Expose Emoncms on localhost port 8080
-      - 8080:80
-    #volumes:
-      ##mount emoncms files from local FS for dev
-      #- ./emoncms:/var/www/html
-    env_file:
-      # Use default enviroment variables file for dev
-      - 'default.docker-env'
-
-  db:
-    env_file:
-      - 'default.docker-env'
-  redis:
-    env_file:
-      - 'default.docker-env'
+  php:
+    environment:
+      - FEEDVIEW_PATH=vis/realtime?feedid=
+      - MQTT_PORT=1883
+  mqtt:
+    ports: ['1884:1883']
