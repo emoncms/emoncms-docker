@@ -1,12 +1,19 @@
 version: "2"
 services:
   php:
-    env_file:
-      - .env
+    env_file: .env
     build:
       context: ./php
       args:
         - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+        - "PHPFINA_DIR=${PHPFINA_DIR}"
+        - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
+        - "EMONCMS_DATA_DIR=${EMONCMS_DATA_DIR}"
+        - "LOG_LOCATION=${LOG_LOCATION}"
+        - "PHP_VERSION=${PHP_VERSION}"
+        - "EMONCMS_DIR=${EMONCMS_DIR}"
+        - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "EMONHUB_LOG=${EMONHUB_LOG}"
     volumes:
       - "www:${WEB_DIR}"
       - "phpfina:${PHPFINA_DIR}"
@@ -35,21 +42,18 @@ services:
         args:
           - "MYSQL_DOCKER_IMAGE=${MYSQL_DOCKER_IMAGE}"
     volumes: ["db:${MYSQL_DATA_DIR}"]
-    env_file:
-        - .env
+    env_file: .env
     restart: always
 
   redis:
     image: redis:5
     volumes: ["redis:${REDIS_DATA_DIR}"]
-    env_file:
-        - .env
+    env_file: .env
     restart: always
 
   mqtt:
     image: eclipse-mosquitto:1.6
-    env_file:
-        - .env
+    env_file: .env
     restart: always
 
   emoncms_mqtt:
@@ -69,8 +73,7 @@ services:
     depends_on: ["redis","php"]
     volumes: ["www:${WEB_DIR}"]
     command: sh -c "sleep 5; python ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"
-    env_file:
-        - .env
+    env_file: .env
     restart: always
 
   emonhub:
@@ -86,8 +89,7 @@ services:
        - "emoncms-dir:${EMONCMS_DIR}"
        - "emonhub-dir:${EMONHUB_DIR}"
        - "emoncms-log:${LOG_LOCATION}"
-    env_file:
-        - .env
+    env_file: .env
     environment:
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
     devices:
