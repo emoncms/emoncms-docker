@@ -81,6 +81,8 @@ services:
       context: ./emonhub
       args:
         - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
+        - "EMONHUB_DIR=${EMONHUB_DIR}"
+        - "EMONHUB_CONF=${EMONHUB_CONF}"
     depends_on: ["mqtt"]
     privileged: true
     restart: always
