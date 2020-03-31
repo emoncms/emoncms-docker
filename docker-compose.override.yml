@@ -2,7 +2,6 @@ version: "2"
 services:
   php:
     environment:
-      - FEEDVIEW_PATH=vis/realtime?feedid=
       - MQTT_PORT=1883
   mqtt:
     ports: ['1884:1883']

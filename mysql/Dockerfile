@@ -1,4 +1,3 @@
-## non arm32 bit
 ARG MYSQL_DOCKER_IMAGE
 FROM ${MYSQL_DOCKER_IMAGE}
 # comment out "..only listening the localhost.."

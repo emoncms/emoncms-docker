@@ -1,18 +1,12 @@
 version: "2"
 services:
   php:
+    env_file:
+      - ./env
     build:
       context: ./php
       args:
         - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
-        - "PHPFINA_DIR=${PHPFINA_DIR}"
-        - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
-        - "EMONCMS_DATA_DIR=${EMONCMS_DATA_DIR}"
-        - "LOG_LOCATION=${LOG_LOCATION}"
-        - "PHP_VERSION=${PHP_VERSION}"
-        - "EMONCMS_DIR=${EMONCMS_DIR}"
-        - "EMONHUB_DIR=${EMONHUB_DIR}"
-        - "EMONHUB_LOG=${EMONHUB_LOG}"
     volumes:
       - "www:${WEB_DIR}"
       - "phpfina:${PHPFINA_DIR}"
@@ -20,39 +14,11 @@ services:
       - "emoncms-log:${LOG_LOCATION}"
       - "emoncms-dir:${EMONCMS_DIR}"
       - "emonhub-dir:${EMONHUB_DIR}"
-      - "var-lock:/var/lock"
       - "emonhub-log:${EMONHUB_LOG}"
-      - "./shutdown_signal:/shutdown_signal"
+      - "var-lock:/var/lock"
     environment:
-      - "MYSQL_HOST=${MYSQL_HOST}"
-      - "MYSQL_PORT=${MYSQL_PORT}"
-      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-      - "MYSQL_USER=${MYSQL_USER}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-      - "REDIS_ENABLED=${REDIS_ENABLED}"
-      - "REDIS_HOST=${REDIS_HOST}"
-      - "REDIS_PORT=${REDIS_PORT}"
-      - "REDIS_PREFIX=${REDIS_PREFIX}"
-      - "MQTT_ENABLED=${MQTT_ENABLED}"
-      - "MQTT_HOST=${MQTT_HOST}"
-      - "MQTT_USER=${MQTT_USER}"
-      - "MQTT_PORT=${MQTT_PORT}"
-      - "MQTT_PASSWORD=${MQTT_PASSWORD}"
-      - "MQTT_BASETOPIC=${MQTT_BASETOPIC}"
-      - "PHPFINA_DIR=${PHPFINA_DIR}"
-      - "PHPTIMESERIES_DIR=${PHPTIMESERIES_DIR}"
-      - "REDISBUFFER_ENABLED=${PREDISBUFFER_ENABLED}"
-      - "EMONCMS_DIR=${EMONCMS_DIR}"
-      - "OPENENERGYMONITOR_DIR=${OPENENERGYMONITOR_DIR}"
-      - "DEFAULT_LANG=${DEFAULT_LANG}"
-      - "LOG_ENABLED=${LOG_ENABLED}"
-      - "LOG_LOCATION=${LOG_LOCATION}"
-      - "LOG_LEVEL=${LOG_LEVEL}"
-      - "APPNAME=${APPNAME}"
-      - "FEEDVIEW_PATH=${FEEDVIEW_PATH}"
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
-      - "EMONHUB_DIR=${EMONHUB_DIR}"
-      - "EMONHUB_LOG=${EMONHUB_LOG}"
+
     working_dir: ${WEB_DIR}/${APPNAME}
     restart: always
 
@@ -69,34 +35,21 @@ services:
         args:
           - "MYSQL_DOCKER_IMAGE=${MYSQL_DOCKER_IMAGE}"
     volumes: ["db:${MYSQL_DATA_DIR}"]
-    environment:
-      - "MYSQL_HOST=${MYSQL_HOST}"
-      - "MYSQL_PORT=${MYSQL_PORT}"
-      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-      - "MYSQL_USER=${MYSQL_USER}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-      - "MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}"
-      - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
-      #   - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    env_file:
+        - ./env
     restart: always
 
   redis:
     image: redis:5
     volumes: ["redis:${REDIS_DATA_DIR}"]
-    environment:
-      - "REDIS_ENABLED=${REDIS_ENABLED}"
-      - "REDIS_HOST=${REDIS_HOST}"
-      - "REDIS_PORT=${REDIS_PORT}"
-      - "REDIS_PREFIX=${REDIS_PREFIX}"
+    env_file:
+        - ./env
     restart: always
 
   mqtt:
     image: eclipse-mosquitto:1.6
-    environment:
-      - "MQTT_HOST=${MQTT_HOST}"
-      - "MQTT_USER=${MQTT_USER}"
-      - "MQTT_PORT=${MQTT_PORT}"
-      - "MQTT_PASSWORD=${MQTT_PASSWORD}"
+    env_file:
+        - ./env
     restart: always
 
   emoncms_mqtt:
@@ -116,11 +69,8 @@ services:
     depends_on: ["redis","php"]
     volumes: ["www:${WEB_DIR}"]
     command: sh -c "sleep 5; python ${WEB_DIR}/${APPNAME}/scripts/services/service-runner/service-runner.py"
-    environment:
-      - "REDIS_ENABLED=${REDIS_ENABLED}"
-      - "REDIS_HOST=${REDIS_HOST}"
-      - "REDIS_PORT=${REDIS_PORT}"
-      - "REDIS_PREFIX=${REDIS_PREFIX}"
+    env_file:
+        - ./env
     restart: always
 
   emonhub:
@@ -128,10 +78,6 @@ services:
       context: ./emonhub
       args:
         - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
-        - "EMONCMS_DIR=${EMONCMS_DIR}"
-        - "EMONHUB_DIR=${EMONHUB_DIR}"
-        - "EMONHUB_LOG=${EMONHUB_LOG}"
-        - "REBOOT_HOST_TOGGLE=/reboot_request"
     depends_on: ["mqtt"]
     privileged: true
     restart: always
@@ -140,21 +86,13 @@ services:
        - "emoncms-dir:${EMONCMS_DIR}"
        - "emonhub-dir:${EMONHUB_DIR}"
        - "emoncms-log:${LOG_LOCATION}"
-       - "/boot:/boot"
-       - "./shutdown_signal:/shutdown_signal"
+    env_file:
+        - ./env
     environment:
-      - "REDIS_ENABLED=${REDIS_ENABLED}"
-      - "REDIS_HOST=${REDIS_HOST}"
-      - "REDIS_PORT=${REDIS_PORT}"
-      - "REDIS_PREFIX=${REDIS_PREFIX}"
-      - "EMONCMS_DIR=${EMONCMS_DIR}"
-      - "EMONHUB_DIR=${EMONHUB_DIR}"
-      - "EMONHUB_LOG=${EMONHUB_LOG}"
       - "EMONCMS_WEB_DIR=${WEB_DIR}/${APPNAME}"
-      - "REBOOT_HOST_TOGGLE=/reboot_request"
     devices:
       - "/dev/gpiomem:/dev/gpiomem"
-
+    command: sh -c "sleep 5; python3 ${EMONHUB_DIR}/src/emonhub.py --config-file=${EMONHUB_CONF}"
 
 volumes:
   db:
