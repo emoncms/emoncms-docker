@@ -30,4 +30,5 @@ sudo systemctl disable serial-getty@ttyAMA0.service
 sudo systemctl mask serial-getty@ttyAMA0.service
 # ----------------------------------------------------------------------------------------
 
-docker-compose up
+# @todo: ¿how to get the container to run initally without the user first loggin out and joining the docker group
+docker-compose up -d && cat message.txt && hotsname -I

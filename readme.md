@@ -32,60 +32,106 @@ After restarting terminal (logout & logback in), you should now be able to `dock
 
 # Quick start
 
-Pull [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonitor/emoncms/) from docker hub and use Docker-compose to link the emoncms container (PHP & Apache) to the MYSQL container.
+Run docker compose to pull [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonitor/emoncms/) from docker hub and run.
 
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
 $ cd emoncms-docker
-$ docker pull openenergymonitor/emoncms:latest
-$ docker-compose up
+$ docker-compose up --detach
 ```
 
-**That's it! Emoncms should now be running in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
 
-### Setup dev enviroment
+**That's it! Emoncms should now be running in Docker container, browse to [http://localhost:8888](http://localhost:8888)**
+
+
+
+# Install on Raspberry Pi
+if you're using a fresh install of [Raspian Buster](https://www.raspberrypi.org/downloads/raspbian/) you could run this script setup and install EmonCMS...
+
+```
+wget https://raw.githubusercontent.com/emoncms/emoncms-docker/v2/install.sh chmod +x init.sh && ./init.sh
+```
+
+***
+
+# Customise config
+## Editing .env
+All the available settings are set in the file `.env` eg:
+```
+WEB_PORT=8888
+MQTT_PORT=1883
+DEFAULT_LANG=en_GB
+PHP_VERSION=7.4
+```
+## Errors:
+If you get an error `bind: address already in use`, this means there is already a process on the host machine listening on port 8888. You can check what processes are listening on ports by running `sudo netstat -plnt`.
+Edit the `.env` file setting `WEB_PORT=8888` and re-run the `docker up -d` command to restart.
+
+## MYSQL Database Credentials
+
+For development the default settings in `default.docker.env` are used. For production a `.env` file should be created with secure database Credentials. See Production setup info below.
+
+## PHP Config
+
+Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe)
+
+## Build / update Docker container
+
+Start as background service:
+```
+    $ docker-compose up -d
+```
+Stop the containers
+```
+    $ sudo docker-compose down
+```
+Stop the containser and delete the volumes (remove database and all stored data)
+```
+    $ sudo docker-compose down -v
+```
+
+**Docker compose up will start 6 containers:**
+
+1. `mqtt` official mosquitto image [Docker eclipse-mosquitto](https://hub.docker.com/_/eclipse-mosquitto)
+1. `db` official MariaDB image [Docker mariadb](https://hub.docker.com/_/mariadb)
+1. `php` official php 7.4 image (fpm variant) with additional php modules being installed during build [Docker php](https://hub.docker.com/_/php)
+1. `apache` official apache image (alpine variant) [Docker httpd](https://hub.docker.com/_/httpd)
+1. `redis` official redis image [Docker redis](https://hub.docker.com/_/redis)
+1. `emoncms_feedwriter` official alpine image with cgi scripting installed during build [Docker alpine](https://hub.docker.com/_/alpine)
+1. `emoncms_mqtt` official alpine image with cgi scripting installed during build [Docker alpine](https://hub.docker.com/_/alpine)
+1. `emoncms_service-runner` official python 3.8 image (slim variant) with additional python modules being installed during build [Docker python](https://hub.docker.com/_/python)
+1. `emonhub` official python 3.8 image (slim variant) with additional python modules being installed during build [Docker python](https://hub.docker.com/_/python)
+
+> **Help wanted** - Pull requests to reduce the size of any of the above containers would be appreciated. [Multi-stage](https://docs.docker.com/develop/develop-images/multistage-build/) could be an approach to reduce all to software compliation requirements from the final images?...
+
+***
+
+# Setup Dev enviroment
 
 If you want to edit the emoncms file (dev) it's best to clone them externally to docker then mount volume into the container:
 
-Uncommnet in `docker-compose.override.yml`:
+Uncomment in `docker-compose.override.yml`:
 
 ```
 volumes:
   ##mount emoncms files from local FS for dev
   - ./emoncms:/var/www/html
 ```
-Then clone the repos into `./emoncms`
 
+Then clone the repos:
 ```
-$ ./bin/setup_dev_repositories
-$ docker-compose pull
-$ docker-compose up
+git clone https://github.com/emoncms/emoncms.git ./emoncms
+git clone https://github.com/emoncms/dashboard.git ./emoncms/Modules/dashboard
+git clone https://github.com/emoncms/graph.git ./emoncms/Modules/graph
 ```
-
-
-If you get an error `bind: address already in use`, this means there is already a process on the host machine listening on port 8080. You can check what processes are listening on ports by running `sudo netstat -plnt`. There are two options, either change the [emoncms web container port](https://github.com/emoncms/emoncms-docker/blob/master/docker-compose.override.yml#L9) to use a different port then rebuild the container or kill the process currently running on the host machine using the same port.   
-
-***
-
-## Build Emoncms Docker Containers
-
-#### Git Clone
-
-*Note: If Emoncms Docker being used for production / testing (i.e modifing the Emoncms files at run-time is not required) there is no need to clone emoncms core & modules since by default the Emoncms git master branch is cloned when the containers are built (see Dockerfile), this cloned 'snapshot' is then overwritten by the Emoncms files mounted from local file-system when running development docker-compose (default)*
-
-Run the following script to clone the `emoncms` repository along with the `dashboard` and `graph` modules:
-
-```bash
-./bin/setup_dev_repositories
-```
-
-*Further modules can be found in the [emoncms git repo](https://github.com/emoncms/) e.g. backup, wifi etc.*
+Further modules can be found in the ***[emoncms git repo](https://github.com/emoncms/)*** e.g. backup, wifi etc.
 
 The file structure should look like:
 
 ```
 +-- emoncms-docker
-¦   +-- Dockerfile
+¦   +-- <docker-compose files>
+¦   +-- install.sh
 ¦   +-- docker-compose.yml
 +-- emoncms
 ¦   +-- <emoncms-core files>
@@ -94,58 +140,13 @@ The file structure should look like:
 ¦       +-- <core-modules> e.g. admin, feed, input
 ¦       +-- <optional-modules> e.g dashboard
 ```
-
-#### Customise config
-
-##### MYSQL Database Credentials
-
-For development the default settings in `default.docker.env` are used. For production a `.env` file should be created with secure database Credentials. See Production setup info below.
-
-##### PHP Config
-
-Edit `config/php.ini` to add custom php settings e.g. timezone (default Europe)
-
-#### Build / update Docker container
-
-Required on first run or if `Dockerfile` or `Docker-compose.yml` are changed:
-
-	$ docker-compose build
-
-
-### Start Emoncms containers
-
-Start as foreground service:
-
-	$ docker-compose up
-
-Stop with [CTRL + c]
-
-
-**That's it! Emoncms should now be runnning in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
-
-
-Start as background service:
-
-	$ docker-compose up -d
-	
-Stop the containers
-
-	$ sudo docker-compose down 
-
-Stop the containser and delete the volumes (remove database and all stored data)
-
-	$ sudo docker-compose down -v
-
-**Docker compose up will start two containers:**
-
-1. `emon_web` which is based on the official [Docker PHP-Apache image](https://hub.docker.com/_/php)
-2. `emon_db` which is based on the offical [Docker MYSQL image](https://hub.docker.com/_/mysql)
+Then start the containers _(in --detach mode -d )_:
+```
+$ docker-compose up -d
+```
 
 ***
-***
-
-### How Docker Compose works...
-
+## How Docker Compose works...
 Infomation about how docker-copose workin in Emoncms Docker.
 
 #### Development Vs Production
@@ -160,39 +161,49 @@ The first `docker-compose.yml` defines the base config; things that are common t
 
 The second file `docker-compose.override.yml` defines additional things for development enviroment e.g. use `default.docker-env` enviroment variables and *mount* emoncms files from local file-system instead of *copy* into container.
 
-The third file `docker-compose.prod.yml` defines production specific setup e.g. expose port 80 and *copy* in files instead of *mount*. The production docker-compose file  is `docker-compose.prod.yml` instead of `docker-compose.override.yml` when the Emoncms Docker contains are ran as 'proudcution'
+The third file `docker-compose.prod.yml` defines production specific setup e.g. expose port 80 and *copy* in files instead of *mount*. The production docker-compose file  is `docker-compose.prod.yml` instead of `docker-compose.override.yml` when the Emoncms Docker contains are ran as 'production'
 
 This setup is based on the recomended Docker method, see [Docker Multiple Compose Files Docs](https://docs.docker.com/compose/extends/#multiple-compose-files).
 
-#### Development
+### Development
 
 The development enviroment with the base + override compose is used by default e.g:
 
     $ docker-compose up
 
-#### Production
+### Production
 
 To run the production compose setup run:
 
     $ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 
-### Files, storage & database info
+## Files, storage & database info
 
 Infomation about how files and databases work in Emoncms Docker.
 
-#### Files
+### Files
 
-**By default when running the development compose enviroment (see above) Emoncms files are mounted from the host file system in the `emon_web` Docker container at startup.** This is desirable for dev. For production / deployment / clean testing run production docker compose (see above). This will **copy** emoncms files into the docker container on first run. Any changes made to the files inside the container will be lost when the container is stopped.
+All the files are within the docker volumes by default. If you'd like to edit the files on your machine to test new emoncms features or modules you could mount (link to) a directory on your machine to act as the web directory for emoncms...
+
+Uncomment the mount section from `docker-compose.override.yml`
+```
+volumes:
+  ##mount emoncms files from local FS for dev
+  ##- ./emoncms:/var/www/html
+```
+> ensure that you have a directory to use as the first value `[your machine]:[docker container]`):
 
 
-#### Storage
+### Storage
 
-Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker file volumes e.g.`emon-phpfiwa`. Data stored in these folders is persistent if the container is stopped / started but cannot be accessed outside of the container. See below for how to list and remove docker volumes.
+Storage for feed engines e.g. `var/lib/phpfiwa` are mounted as persistent Docker file volumes e.g.`phpfiwa`. Data stored in these folders is persistent if the container is stopped / started but cannot be accessed outside of the container. See below for how to list and remove docker volumes.
+> these could also be changed in the `override.yml` file
 
-#### Database
+### Database
 
-Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`emon-db-data`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container.
+Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e.g.`db`. Database data is persistent if the container is stopped / started but cannot be accessed outside of the container.
+> these could also be changed in the `override.yml` file
 
 
 ***
@@ -201,50 +212,50 @@ Database storage `/var/lib/mysql/data` is mounted as persistent Docker volumes e
 
 List running containers
 
-	$ docker ps
-	
-List all containsers 
+    $ docker ps
 
-	$ docker ps -a
+List all containsers
+
+    $ docker ps -a
 
 Stop / kill all running containers:
 
-	$ docker stop $(docker ps -a -q)
+    $ docker stop $(docker ps -a -q)
 
-	$ docker kill $(docker ps -a -q)
+    $ docker kill $(docker ps -a -q)
 
 Remove all containers:
 
 e.g. emon_web, emon_db
 
-	$ docker rm $(docker ps -a -q)
-	
+    $ docker rm $(docker ps -a -q)
+
 List all base images
 
-	$ docker image ls
-	
+    $ docker image ls
+
 Remove all images:
 
 e.g. Base images: php-apache, mysql, Ubuntu pulled from Dockerhub
 
-	$ docker rmi $(docker images -q)
+    $ docker rmi $(docker images -q)
 
-List docker volumes (where data is stored e.g database) 
+List docker volumes (where data is stored e.g database)
 
- 	$ docker volume ls
+     $ docker volume ls
 
 Remove single or all docker volumes
 
-	$ docker volume rm <name_of_volume>
-	$ docker volume prune
+    $ docker volume rm <name_of_volume>
+    $ docker volume prune
 
 Attach a shell to a running container:
 
-	$ docker exec -it emoncmsdocker_web_1 /bin/bash
+    $ docker exec -it emoncmsdocker_web_1 /bin/bash
 
 ****
 
-## Pushing to docker hub 
+## Pushing to docker hub
 
 From: https://docs.docker.com/docker-hub/repos/
 
