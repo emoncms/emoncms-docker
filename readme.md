@@ -52,7 +52,7 @@ Uncommnet in `docker-compose.override.yml`:
 ```
 volumes:
   ##mount emoncms files from local FS for dev
-  - ./emoncms:/var/www/html
+  - ./emoncms:/var/www/emoncms
 ```
 Then clone the repos into `./emoncms`
 
