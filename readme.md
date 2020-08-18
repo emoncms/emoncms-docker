@@ -240,7 +240,7 @@ Remove single or all docker volumes
 
 Attach a shell to a running container:
 
-	$ docker exec -it emoncmsdocker_web_1 /bin/bash
+	$ docker exec -it emoncms-docker_web_1 /bin/bash
 
 ****
 
