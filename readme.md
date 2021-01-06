@@ -37,6 +37,7 @@ Pull [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonit
 ```
 $ git clone https://github.com/emoncms/emoncms-docker
 $ cd emoncms-docker
+$ ./bin/setup_dev_repositories
 $ docker pull openenergymonitor/emoncms:latest
 $ docker-compose up
 ```
