@@ -44,7 +44,7 @@ docker-compose up
 
 **That's it! Emoncms should now be running in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
 
-### Setup dev enviroment
+### Setup dev environment
 
 If you want to edit the emoncms file (dev) it's best to clone them externally to docker then mount volume into the container:
 
