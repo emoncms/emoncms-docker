@@ -7,6 +7,7 @@ git clone https://github.com/emoncms/emoncms.git ./emoncms
 git clone https://github.com/emoncms/dashboard.git ./emoncms/Modules/dashboard
 git clone https://github.com/emoncms/graph.git ./emoncms/Modules/graph
 git clone https://github.com/emoncms/device.git ./emoncms/Modules/device
+git clone https://github.com/emoncms/app.git ./emoncms/Modules/app
 
 # Use docker settings
 cp  docker.settings.ini ./emoncms/settings.ini
