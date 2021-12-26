@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y \
               libmosquitto-dev \
               gettext \
               nano \
-              git-core 
+              git-core \
+              supervisor
 
 # Enable PHP modules
 RUN docker-php-ext-install -j$(nproc) mysqli curl json gettext
@@ -52,6 +53,10 @@ RUN chown www-data:root /var/opt/emoncms/phptimeseries
 RUN mkdir /var/log/emoncms
 RUN touch /var/log/emoncms/emoncms.log
 RUN chmod 666 /var/log/emoncms/emoncms.log
+
+# To start Apache and emoncms_mqtt from supervisord
+COPY config/supervisord.conf /etc/supervisor
+ENTRYPOINT [ "/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf" ]
 
 # TODO
 # Add Pecl :
