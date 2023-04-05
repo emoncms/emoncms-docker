@@ -3,12 +3,11 @@
 version: '2'
 
 services:
-
   # PHP & apache container using offical Docker PHP iamge
   web:
     # If pre-built image from docker hub exists then use that (docker pull openenergymonitor/emoncms:latest) if not Buildcontainer see Dockerflile
     image: openenergymonitor/emoncms:latest
-    build: .
+    build: web/.
     volumes:
       # mount docker volumes persistant inside docker container
       - emon-phpfina:/var/opt/emoncms/phpfina
@@ -42,6 +41,15 @@ services:
       driver: json-file
       options:
         max-size: "10m"
+
+  # Consider including mosquitto broker service
+  # Needs to be running elsewhere otherwise
+  # but maybe thats best.. 
+  
+  # mqtt:
+  #   image: eclipse-mosquitto:latest
+  #   build: mqtt/.
+  #   restart: always
 
 volumes:
   emon-phpfiwa:

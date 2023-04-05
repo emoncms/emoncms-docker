@@ -13,10 +13,15 @@ RUN apt-get update && apt-get install -y \
 # Enable PHP modules
 RUN docker-php-ext-install -j$(nproc) mysqli gettext
 
-# Install redis and mosquitto
-COPY install.sh /
-RUN chmod +x /install.sh
-RUN /install.sh
+# Install redis
+COPY install_redis.sh /
+RUN chmod +x /install_redis.sh
+RUN /install_redis.sh
+
+# Install mosquitto
+COPY install_mosquitto.sh /
+RUN chmod +x /install_mosquitto.sh
+RUN /install_mosquitto.sh
 
 RUN a2enmod rewrite
 
