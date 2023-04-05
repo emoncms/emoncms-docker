@@ -4,9 +4,9 @@
 
 **Note: This docker installation is not quite a complete Emoncms installation.** In general we recommend building an Emoncms installation using our EmonScripts installation script on a Debian/Ubuntu/RaspberryPi based system, this said this docker image does provide a useful alternative approach to get a simple but functional emoncms installation up and running.
 
-***
+Latest image hosted on docker hub: [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonitor/emoncms/)
 
-# Quickstart
+## Quickstart
 
     docker pull openenergymonitor/emoncms
     git clone https://github.com/emoncms/emoncms-docker
@@ -15,7 +15,9 @@
 
 That's it! Emoncms should now be running: http://localhost:8080
 
-# Install Docker
+***
+
+## Install Docker
 
 - [Offical Docker install guide](https://docs.docker.com/engine/installation/)
 
@@ -33,22 +35,7 @@ docker run hello-world
 
 After restarting terminal (logout & log back in), you should now be able to `docker run hello-world` without `sudo`.
 
-
-# Quick start
-
-Pull [openenergymonitor/emoncms:latest](https://hub.docker.com/r/openenergymonitor/emoncms/) from docker hub and use Docker-compose to link the Emoncms container (PHP & Apache) to the MYSQL container.
-
-```bash
-git clone https://github.com/emoncms/emoncms-docker
-cd emoncms-docker
-./bin/setup_dev_repositories
-docker pull openenergymonitor/emoncms:latest
-docker-compose up
-```
-
-**That's it! Emoncms should now be running in Docker container, browse to [http://localhost:8080](http://localhost:8080)**
-
-### Setup dev environment
+## Setup dev environment
 
 If you want to edit the emoncms file (dev) it's best to clone them externally to docker then mount volume into the container:
 
