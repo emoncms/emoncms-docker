@@ -1,13 +1,10 @@
-Using Docker it's possible to fire up Emoncms on a bare system (assuming Docker is installed) in a couple of minutes with all the LAMP install & config taken care of.
+# Emoncms docker
 
-This is great for development since it's possible to play about with Emoncms running in a Docker container without fear of messing up your main Emoncms install.
+Welcome to the Emoncms docker repository!
 
-In the future, Docker can even be used as a deployment tool for Emoncms. In theory, it should be possible to deploy the Docker container on any server within minutes :-)
+An easy way to deploy a simple Emoncms installation.
 
-We have taken a multi-container approach with php-apache running in one container and the MYSQL database running in another. The containers are linked using [docker-compose](https://docs.docker.com/compose).
-
-
-[**To do list**](https://github.com/emoncms/emoncms-docker/issues/2)
+**Note:** This docker installation is not quite a complete Emoncms installation. In general we recommend building an Emoncms installation using our EmonScripts installation script on a Debian/Ubuntu/RaspberryPi based system, this said this docker image does provide a useful alternative approach to get a simple but functional emoncms installation up and running.
 
 ***
 
