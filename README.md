@@ -1,10 +1,10 @@
 # Emoncms docker
 
+### An easy way to deploy a simple Emoncms installation.
+
 Welcome to the Emoncms docker repository!
 
-An easy way to deploy a simple Emoncms installation.
-
-**Note:** This docker installation is not quite a complete Emoncms installation. In general we recommend building an Emoncms installation using our EmonScripts installation script on a Debian/Ubuntu/RaspberryPi based system, this said this docker image does provide a useful alternative approach to get a simple but functional emoncms installation up and running.
+**Note: This docker installation is not quite a complete Emoncms installation.** In general we recommend building an Emoncms installation using our EmonScripts installation script on a Debian/Ubuntu/RaspberryPi based system, this said this docker image does provide a useful alternative approach to get a simple but functional emoncms installation up and running.
 
 ***
 
