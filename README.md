@@ -6,6 +6,15 @@
 
 ***
 
+# Quickstart
+
+    docker pull openenergymonitor/emoncms
+    git clone https://github.com/emoncms/emoncms-docker
+    cd emoncms-docker
+    docker-compose up
+
+That's it! Emoncms should now be running: http://localhost:8080
+
 # Install Docker
 
 - [Offical Docker install guide](https://docs.docker.com/engine/installation/)
