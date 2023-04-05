@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y \
               libmcrypt-dev \
               gettext \
               nano \
-              git-core 
+              git-core \
+              supervisor
 
 # Enable PHP modules
 RUN docker-php-ext-install -j$(nproc) mysqli gettext
@@ -53,8 +54,6 @@ RUN mkdir /var/log/emoncms
 RUN touch /var/log/emoncms/emoncms.log
 RUN chmod 666 /var/log/emoncms/emoncms.log
 
-
-# TODO
-# Add Pecl :
-# - dio
-# - Swiftmailer
+# To start Apache and emoncms_mqtt from supervisord
+COPY config/supervisord.conf /etc/supervisor
+ENTRYPOINT [ "/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf" ]
