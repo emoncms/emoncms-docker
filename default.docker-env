@@ -18,8 +18,8 @@ REDIS_PORT=6379
 REDIS_PREFIX='emoncms'
 
 # MQTT (needs to be running elsewhere)
-MQTT_ENABLED=false
-MQTT_HOST=IP-ADDRESS-OF-MQTT-SERVER
+MQTT_ENABLED=true
+MQTT_HOST=mqtt
 MQTT_CLIENTID=emoncmsmqtt
 MQTT_USER=emonpi
 MQTT_PASSWORD=emonpimqtt2016
