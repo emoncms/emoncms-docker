@@ -20,7 +20,7 @@ services:
   # MYSQL Database
   db:
     # Official MYSQL docker image
-    image: mariadb:latest
+    image: mariadb:11.0
     environment:
       - "MYSQL_HOST=localhost"
       - "MARIADB_AUTO_UPGRADE=1"
@@ -34,22 +34,22 @@ services:
 
   redis:
     # Official redis image
-    image: redis:latest
+    image: redis:7.0
     volumes:
       - emon-redis-data:/data
     logging:
       driver: json-file
       options:
         max-size: "10m"
-
-  # Consider including mosquitto broker service
-  # Needs to be running elsewhere otherwise
-  # but maybe thats best.. 
-  
-  # mqtt:
-  #   image: eclipse-mosquitto:latest
-  #   build: mqtt/.
-  #   restart: always
+          
+  mqtt:
+    image: eclipse-mosquitto:2.0
+    build: mqtt/.
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
 
 volumes:
   emon-phpfiwa:
