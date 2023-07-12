@@ -60,5 +60,5 @@ RUN touch /var/log/emoncms/emoncms.log
 RUN chmod 666 /var/log/emoncms/emoncms.log
 
 # To start Apache and emoncms_mqtt from supervisord
-COPY config/supervisord.conf /etc/supervisor
+COPY config/supervisord.conf /etc/supervisor/supervisord.conf
 ENTRYPOINT [ "/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf" ]
