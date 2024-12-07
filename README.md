@@ -6,6 +6,8 @@ Thanks to community memeber [alexandrecuer](https://community.openenergymonitor.
 
 Standalone image with everything inside: https://hub.docker.com/r/alexjunk/emoncms
 
+**Note: this is not a drop in replacement for the emoncms-docker container, this is an all-in-one image with different architecture**
+
 Included modules : graph, dashboard, app, sync, postprocess, backup
 
 emonHub docker: https://hub.docker.com/r/alexjunk/emonhub
