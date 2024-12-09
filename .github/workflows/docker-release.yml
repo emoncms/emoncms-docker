@@ -27,5 +27,5 @@ jobs:
         context: ./web
         push: true
         tags: |
-          leen15/emoncms:latest
-          leen15/emoncms:${{ github.event.release.tag_name }}
+          openenergymonitor/emoncms:latest
+          openenergymonitor/emoncms:${{ github.event.release.tag_name }}
