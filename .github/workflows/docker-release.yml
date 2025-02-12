@@ -1,13 +1,27 @@
-name: Build and Push Docker Image
+name: Build and Push emoncms legacy Docker Image
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      php_version:
+        description: 'php_version'
+        required: true
+        type: string
+        default: '8.2.27'
+      emoncms_src:
+        description: 'emoncms_src'
+        required: true
+        type: string
+        default: 'emoncms/emoncms'
+      branch:
+        description: 'branch'
+        required: true
+        type: string
+        default: 'stable'
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
     # Checkout the repository code
     - name: Checkout code
@@ -19,13 +33,24 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+    - id: emoncms_version
+        name: get emoncms version
+        run: |
+          wget https://raw.githubusercontent.com/${{ inputs.emoncms_src }}/${{ inputs.branch }}/version.json
+          version=$(cat version.json | jq --raw-output '.version')
+          echo $version
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
     # Build and push Docker image
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
         context: ./web
+        build-args: |
+            "BUILD_FROM=php:${{ inputs.php_version }}-apache"
+            "EMONCMS_SRC=https://github.com/${{ inputs.emoncms_src }}"
+            "BRANCH=${{ inputs.branch }}"
         push: true
         tags: |
           openenergymonitor/emoncms:latest
-          openenergymonitor/emoncms:${{ github.event.release.tag_name }}
+          openenergymonitor/emoncms:${{ steps.emoncms_version.outputs.version }}
