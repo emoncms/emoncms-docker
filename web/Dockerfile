@@ -1,8 +1,22 @@
+ARG BUILD_FROM=php:8.0-apache
+
 # Offical Docker PHP & Apache image https://hub.docker.com/_/php/
-FROM php:8.0-apache
+FROM $BUILD_FROM
+
+ARG \
+    EMONCMS_SRC=https://github.com/emoncms/emoncms \
+    BRANCH=master \
+    DAEMON=www-data \
+    WWW=/var/www \
+    OEM_DIR=/opt/openenergymonitor \
+    EMONCMS_DIR=/opt/emoncms \
+    EMONCMS_LOG_LOCATION=/var/log/emoncms \
+    EMONCMS_DATADIR=/var/opt/emoncms
+    
 
 # Install deps
 RUN apt-get update && apt-get install -y \
+              iproute2 \
               libcurl4-gnutls-dev \
               libmcrypt-dev \
               gettext \
@@ -33,31 +47,42 @@ COPY config/emoncms.conf /etc/apache2/sites-available/emoncms.conf
 RUN a2dissite 000-default.conf
 RUN a2ensite emoncms
 
-# NOT USED ANYMORE - GIT CLONE INSTEAD
-# Copy in emoncms files, files can be mounted from local FS for dev see docker-compose
-# ADD ./emoncms /var/www/html
-
 # Clone in master Emoncms repo & modules - overwritten in development with local FS files
-RUN mkdir /var/www/emoncms
-RUN git clone -b '11.6.9' --single-branch https://github.com/emoncms/emoncms.git /var/www/emoncms
-RUN git clone https://github.com/emoncms/dashboard.git /var/www/emoncms/Modules/dashboard
-RUN git clone https://github.com/emoncms/graph.git /var/www/emoncms/Modules/graph
-RUN git clone https://github.com/emoncms/app.git /var/www/emoncms/Modules/app
-RUN git clone https://github.com/emoncms/device.git /var/www/emoncms/Modules/device
+RUN \
+    set -x;\
+    mkdir -p $OEM_DIR;\
+    cd $WWW && git clone -b $BRANCH $EMONCMS_SRC;\
+    cd $WWW/emoncms/Modules && git clone https://github.com/emoncms/dashboard;\
+    cd $WWW/emoncms/Modules && git clone https://github.com/emoncms/graph;\
+    cd $WWW/emoncms/Modules && git clone https://github.com/emoncms/app;\
+    cd $WWW/emoncms/Modules && git clone https://github.com/emoncms/device;\
+    chown -R $DAEMON $WWW/emoncms
+
+WORKDIR $OEM_DIR
+
+RUN \
+    set -x;\
+    git config --system --replace-all safe.directory '*';\
+    git clone https://github.com/openenergymonitor/EmonScripts;\
+    cp EmonScripts/install/emonsd.config.ini EmonScripts/install/config.ini
 
 COPY docker.settings.ini /var/www/emoncms/settings.ini
 
 # Create folders & set permissions for feed-engine data folders (mounted as docker volumes in docker-compose)
-RUN mkdir /var/opt/emoncms
-RUN mkdir /var/opt/emoncms/phpfina
-RUN mkdir /var/opt/emoncms/phptimeseries
-RUN chown www-data:root /var/opt/emoncms/phpfina
-RUN chown www-data:root /var/opt/emoncms/phptimeseries
+RUN \
+    set -x;\
+    mkdir $EMONCMS_DATADIR;\
+    mkdir $EMONCMS_DATADIR/phpfina;\
+    mkdir $EMONCMS_DATADIR/phptimeseries;\
+    chown -R $DAEMON $EMONCMS_DATADIR
 
 # Create Emoncms logfile
-RUN mkdir /var/log/emoncms
-RUN touch /var/log/emoncms/emoncms.log
-RUN chmod 666 /var/log/emoncms/emoncms.log
+RUN \
+    set -x;\
+    mkdir -p $EMONCMS_LOG_LOCATION;\
+    chown $DAEMON $EMONCMS_LOG_LOCATION;\
+    touch $EMONCMS_LOG_LOCATION/emoncms.log;\
+    chmod 666 $EMONCMS_LOG_LOCATION/emoncms.log
 
 # To start Apache and emoncms_mqtt from supervisord
 COPY config/supervisord.conf /etc/supervisor/supervisord.conf
