@@ -103,9 +103,6 @@ RUN set -x;\
     cp EmonScripts/install/emonsd.config.ini EmonScripts/install/config.ini
 
 COPY docker.settings.ini /var/www/emoncms/settings.ini
-# Upstream service-runner uses redis.Redis() (localhost); Docker needs REDIS_HOST (see service-runner.py).
-COPY service-runner.py $WWW/emoncms/scripts/services/service-runner/service-runner.py
-RUN chown $DAEMON $WWW/emoncms/scripts/services/service-runner/service-runner.py
 
 # Create folders & set permissions for feed-engine data, logs, and worker lock files
 RUN set -x;\
