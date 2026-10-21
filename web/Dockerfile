@@ -5,9 +5,11 @@ FROM $BUILD_FROM
 
 ARG \
     TARGETPLATFORM \
-    S6_OVERLAY_VERSION=3.1.6.2 \
+    S6_OVERLAY_VERSION=3.2.3.2 \
+    PHPREDIS_VERSION=6.3.0 \
     S6_SRC=https://github.com/just-containers/s6-overlay/releases/download \
     S6_DIR=/etc/s6-overlay/s6-rc.d \
+    S6_BUNDLES=/etc/s6-overlay/user-bundles.d \
     PRIMOS="apache2" \
     SECONDOS="emoncms_mqtt service-runner feedwriter sync_upload" \
     EMONCMS_SRC=https://github.com/emoncms/emoncms \
@@ -140,7 +142,7 @@ COPY emoncms_pre.sh sql_ready.sh sync_upload-run.sh $OEM_DIR/
 # sql_ready must run before Apache serves traffic (otherwise / hits user_controller with no users table).
 # It was only registered in user2; in s6-overlay v3 the default target may not activate user2, so
 # schema init never ran. sql_ready lives in user with emoncms_pre -> sql_ready -> apache2.
-RUN set -x;\
+RUN set -ex;\
     mkdir $S6_DIR/emoncms_pre;\
     mkdir $S6_DIR/emoncms_pre/dependencies.d;\
     touch $S6_DIR/emoncms_pre/dependencies.d/base;\
@@ -151,23 +153,23 @@ RUN set -x;\
     touch $S6_DIR/sql_ready/dependencies.d/emoncms_pre;\
     echo "oneshot" > $S6_DIR/sql_ready/type;\
     echo "$OEM_DIR/sql_ready.sh" > $S6_DIR/sql_ready/up;\
-    touch $S6_DIR/user/contents.d/emoncms_pre;\
-    touch $S6_DIR/user/contents.d/sql_ready;\
+    touch $S6_BUNDLES/user/contents.d/emoncms_pre;\
+    touch $S6_BUNDLES/user/contents.d/sql_ready;\
     for i in $PRIMOS; do mkdir $S6_DIR/$i; done;\
     for i in $PRIMOS; do mkdir $S6_DIR/$i/dependencies.d; done;\
     for i in $PRIMOS; do touch $S6_DIR/$i/dependencies.d/sql_ready; done;\
-    for i in $PRIMOS; do touch $S6_DIR/user/contents.d/$i; done;\
+    for i in $PRIMOS; do touch $S6_BUNDLES/user/contents.d/$i; done;\
     for i in $PRIMOS; do echo "longrun" > $S6_DIR/$i/type; done;\
     echo "#!/command/with-contenv sh" > $S6_DIR/apache2/run;\
     echo "rm -f /var/run/apache2/apache2.pid" >> $S6_DIR/apache2/run;\
     echo "exec apache2-foreground" >> $S6_DIR/apache2/run
 
 # s6-overlay: user2 bundle (workers)
-RUN set -x;\
+RUN set -ex;\
     for i in $SECONDOS; do mkdir $S6_DIR/$i; done;\
     for i in $SECONDOS; do mkdir $S6_DIR/$i/dependencies.d; done;\
     for i in $SECONDOS; do touch $S6_DIR/$i/dependencies.d/sql_ready; done;\
-    for i in $SECONDOS; do touch $S6_DIR/user2/contents.d/$i; done;\
+    for i in $SECONDOS; do touch $S6_BUNDLES/user2/contents.d/$i; done;\
     for i in $SECONDOS; do echo "longrun" > $S6_DIR/$i/type; done;\
     echo "#!/command/with-contenv sh" > $S6_DIR/emoncms_mqtt/run;\
     echo "exec s6-setuidgid $DAEMON php $WWW/emoncms/scripts/services/emoncms_mqtt/emoncms_mqtt.php" >> $S6_DIR/emoncms_mqtt/run;\

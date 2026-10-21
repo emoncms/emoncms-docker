@@ -17,7 +17,7 @@ services:
         condition: service_healthy
 
   db:
-    image: mariadb:11.0
+    image: mariadb:11.8
     environment:
       - "MYSQL_HOST=localhost"
       - "MARIADB_AUTO_UPGRADE=1"
@@ -30,7 +30,7 @@ services:
         max-size: "10m"
 
   redis:
-    image: redis:7.0
+    image: redis:8
     volumes:
       - emon-redis-data:/data
     healthcheck:
