@@ -2,7 +2,7 @@
 
 # Install Redis
 cd /
-git clone https://github.com/phpredis/phpredis
+git clone --depth 1 -b ${PHPREDIS_VERSION:-6.3.0} https://github.com/phpredis/phpredis
 cd phpredis
 phpize
 ./configure
